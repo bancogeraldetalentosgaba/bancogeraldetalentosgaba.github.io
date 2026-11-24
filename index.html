@@ -20,6 +20,7 @@
   .cartao{position:relative;overflow:hidden;width:100%;max-width:760px;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(231,17,129,.08);padding:34px 26px 30px}
   .cartao::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--magenta) 0 34%,var(--laranja) 34% 67%,var(--verde) 67% 100%)}
   .marca{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .btn-area{margin-left:auto;padding:9px 16px;font-size:14px;border-radius:999px;flex:none}
   .selo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--magenta) 0 55%,var(--laranja) 55% 80%,var(--verde) 80%);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;text-shadow:0 1px 2px rgba(0,0,0,.25);flex:none}
   .marca b{display:block;font-size:18px}.marca span{font-size:13px;color:var(--texto-2)}
   h1{font-size:21px;margin:0 0 6px}h2{font-size:16px;margin:24px 0 8px}
@@ -168,6 +169,7 @@
   <div class="marca" id="marca" style="cursor:pointer" title="Início">
     <div class="selo">GA</div>
     <div><b>Trabalhe Conosco</b><span>Banco de Talentos · Projeto GA BA</span></div>
+    <button class="sec btn-area" id="tb-minha" type="button">Minha área</button>
   </div>
   <div class="topbar" id="topbar"></div>
   <div class="etapas oculto" id="etapas"></div>
@@ -230,6 +232,15 @@
     <div class="acoes"><button class="sec" data-ir="v-vagas">Voltar</button><button id="b-quero">Quero me candidatar</button></div>
   </section>
 
+  <!-- NOVA RODADA DE TESTES -->
+  <section id="v-renovar" class="oculto">
+    <h1>Hora de refazer os testes</h1>
+    <p class="sub" id="rn-txt"></p>
+    <div class="caixa destaque">Antes de refazer os testes, você quer atualizar as suas informações de cadastro e formação? Se preferir, mantemos tudo como está e você vai direto para os testes. Você também pode atualizar seus dados a qualquer momento em <b>Minha área</b>.</div>
+    <div class="aviso" id="a-renovar"></div>
+    <div class="acoes"><button class="sec" id="rn-atualizar">Atualizar minhas informações</button><button id="rn-manter">Manter e ir para os testes</button></div>
+  </section>
+
   <!-- MINHA ÁREA -->
   <section id="v-area" class="oculto">
     <h1>Minha área</h1>
@@ -273,7 +284,7 @@
       <label class="check"><input type="checkbox" id="lgpd1"> Li e concordo com o uso dos meus dados pessoais para os processos seletivos, nos termos da Lei nº 13.709/2018 (LGPD).</label>
       <label class="check"><input type="checkbox" id="lgpd2"> Autorizo manter meus dados no banco de talentos para outras vagas pelo prazo de 12 meses.</label>
       <div class="aviso" id="a-dados"></div>
-      <div class="acoes"><button type="button" class="sec" data-ir="v-area">Voltar</button><button type="submit">Salvar e continuar</button></div>
+      <div class="acoes"><button type="button" class="sec" data-ir="v-area">Voltar</button><button type="submit" id="b-dados">Salvar e continuar</button></div>
     </form>
   </section>
 
@@ -361,7 +372,8 @@
   <!-- ESCOLHA DAS VAGAS E ENVIO -->
   <section id="v-final" class="oculto">
     <h1 id="fn-titulo">Vagas e regiões de interesse</h1>
-    <p class="sub">Marque as vagas para as quais quer se candidatar. Em algumas vagas, a atuação pode ser em várias regiões da Bahia: indique as regiões onde você tem disponibilidade. As vagas da equipe base são sempre em Salvador.</p>
+    <p class="sub" id="fn-sub"></p>
+    <p class="sub oculto">Marque as vagas para as quais quer se candidatar. Em algumas vagas, a atuação pode ser em várias regiões da Bahia: indique as regiões onde você tem disponibilidade. As vagas da equipe base são sempre em Salvador.</p>
     <div id="fn-vagas"></div>
     <div id="fn-disp">
       <label>Tem disponibilidade para residir na região em que for atuar?</label>
@@ -370,13 +382,13 @@
       <div class="opcoes"><label><input type="radio" name="viagens" value="true"> Sim</label><label><input type="radio" name="viagens" value="false"> Não</label></div>
     </div>
     <div class="aviso" id="a-final"></div>
-    <div class="acoes"><button class="sec" data-ir="v-area">Voltar</button><button id="b-concluir">Enviar candidatura</button></div>
+    <div class="acoes"><button class="sec" data-ir="v-area">Voltar</button><button id="b-concluir">Enviar inscrição</button></div>
   </section>
 
   <section id="v-fim" class="oculto">
     <h1>Candidatura enviada!</h1>
     <p class="sub" id="fim-txt">Obrigado por participar. Acompanhe a situação na sua área. Os próximos passos serão enviados para o seu e-mail.</p>
-    <div class="acoes"><button class="sec" data-ir="v-vagas">Ver vagas</button><button id="b-ir-area">Minha área</button></div>
+    <div class="acoes"><button class="sec" id="b-ir-area">Minha área</button><button id="b-outras">Candidatar-me a outras vagas</button></div>
   </section>
 
   <!-- RESPOSTA A E-MAIL -->
@@ -405,7 +417,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.1";
+const VERSAO = "2026-11-24.2";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -456,10 +468,10 @@ const dataBR = d => d ? new Date(d).toLocaleDateString("pt-BR") : "";
 function desenharTopo() {
   const s = sessao(), em = ls.get("email");
   $("topbar").innerHTML = s
-    ? `<span>Conectado(a) como <b>${esc(em || "")}</b></span><span style="display:flex;gap:6px"><button class="sec" id="tb-area">Minha área</button><button class="sec" id="tb-sair">Sair</button></span>`
+    ? `<span>Conectado(a) como <b>${esc(em || "")}</b></span><button class="sec" id="tb-sair" style="padding:7px 14px;font-size:13.5px">Sair</button>`
     : "";
   $("topbar").classList.toggle("oculto", !s);
-  if (s) { $("tb-area").onclick = abrirArea; $("tb-sair").onclick = () => sair(false); }
+  if (s) $("tb-sair").onclick = () => sair(false);
 }
 function sair(expirou) {
   const s = sessao();
@@ -472,6 +484,7 @@ function sair(expirou) {
 }
 
 // ---------- início
+$("tb-minha").addEventListener("click", e => { e.stopPropagation(); if (teste && teste.questoes) return; sessao() ? abrirArea() : (abrirInicio(), abrirLogin("area")); });
 $("marca").addEventListener("click", () => { if (!(teste && teste.questoes)) abrirInicio(); });
 function abrirInicio() {
   mostrar("v-inicio");
@@ -526,7 +539,9 @@ function abrirVaga(id) {
   $("d-titulo").textContent = vagaAtual.titulo;
   $("b-quero").textContent = ctaVaga(vagaAtual); $("d-qtd").textContent = vagaAtual.vinculo || ""; $("d-qtd").classList.toggle("oculto", !vagaAtual.vinculo);
   $("d-resumo").textContent = vagaAtual.resumo || "";
-  $("d-local").innerHTML = infoVaga(vagaAtual) + (vagaAtual.tipo_local === "nte" ? `<p class="vc-nota" style="margin:10px 0 0">${NOTA_NTE}</p>` : "");
+  $("d-local").innerHTML = infoVaga(vagaAtual);
+  const inscrito = sessao() && area && jaInscrito(vagaAtual.id);
+  $("b-quero").disabled = !!inscrito; if (inscrito) $("b-quero").textContent = "Você já está inscrito(a) nesta vaga";
   $("d-info").textContent = "";
   const li = a => (a || []).map(x => `<li>${esc(x)}</li>`).join("");
   $("d-atrib").innerHTML = li(vagaAtual.atribuicoes); $("d-pre").innerHTML = li(vagaAtual.prerequisitos); $("d-des").innerHTML = li(vagaAtual.desejavel);
@@ -565,6 +580,7 @@ async function aoEntrar(resp) {
     if (!r.ok) throw new Error(d.erro || "Não foi possível entrar.");
     ls.set("sessao", d.sessao); ls.set("email", d.email);
     desenharTopo(); aviso("a-login", ""); fecharLogin();
+    if (destinoLogin === "area") return abrirArea();
     if (destinoLogin === "vagas") {
       try { await carregarArea(); } catch { return; }
       if (area.rodada && area.rodada.status === "em_andamento") return seguir(area.rodada);
@@ -581,11 +597,14 @@ async function continuar() {
   const r = area.rodada, escolhida = ls.get("vaga_escolhida");
   if (!r) {
     if (!escolhida) return abrirArea();
-    return abrirDados();
+    return area.dados_anteriores ? abrirRenovar() : abrirDados();
   }
   if (r.status === "em_andamento") return seguir(r);
-  // rodada concluída e válida: candidatar-se a mais vagas
-  if (escolhida) return abrirFinal(true);
+  // rodada concluída e válida: nova inscrição (uma vaga por vez, sem repetir a mesma vaga)
+  if (escolhida) {
+    if (jaInscrito(escolhida)) { ls.del("vaga_escolhida"); await abrirArea(); return aviso("a-area", "Você já está inscrito(a) nesta vaga. Acompanhe a situação abaixo.", "alerta"); }
+    return abrirFinal(true);
+  }
   abrirArea();
 }
 function seguir(r) {
@@ -599,6 +618,24 @@ function seguir(r) {
   abrirFinal(false);
 }
 let vagaRodada = null;
+function jaInscrito(id) { return (area && area.candidaturas || []).some(c => c.vigente && c.vaga_id === id && !["desistiu", "expirada"].includes(c.status)); }
+
+// ---------- nova rodada de testes
+function abrirRenovar() {
+  $("rn-txt").textContent = area.ultima_validade
+    ? `Os seus testes anteriores valeram até ${dataBR(area.ultima_validade)}. Para se inscrever em novas vagas, é preciso refazê-los.`
+    : "Para se inscrever em novas vagas, é preciso refazer os testes.";
+  aviso("a-renovar", ""); mostrar("v-renovar");
+}
+$("rn-atualizar").addEventListener("click", () => abrirDados());
+$("rn-manter").addEventListener("click", async e => {
+  const vaga = ls.get("vaga_escolhida") || (vagas[0] && vagas[0].id);
+  if (!vaga) return abrirVagas();
+  if (!area.tem_cpf_anterior) return abrirDados();
+  e.target.disabled = true;
+  try { area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: { ...(area.dados_anteriores || {}) } }); seguir(area.rodada); }
+  catch (err) { aviso("a-renovar", err.message); } finally { e.target.disabled = false; }
+});
 
 // ---------- minha área
 async function abrirArea() {
@@ -609,8 +646,10 @@ async function abrirArea() {
   $("ar-ola").innerHTML = `Olá${area.nome ? ", <b>" + esc(area.nome.split(" ")[0]) + "</b>" : ""}! Você está conectado(a) com <b>${esc(area.email)}</b>.`;
   let html = "", botoes = [];
   if (!r) {
-    html = `<div class="caixa destaque">Você ainda não tem uma inscrição ativa. Escolha uma vaga para começar${area.dados_anteriores ? ". Os seus testes anteriores venceram (valem 3 meses): será preciso refazê-los, mas aproveitamos os seus dados" : ""}.</div>`;
-    botoes.push(`<button id="ar-vagas">Ver vagas e começar</button>`);
+    html = area.dados_anteriores
+      ? `<div class="aviso alerta" style="display:block"><b>Seus testes venceram${area.ultima_validade ? " em " + dataBR(area.ultima_validade) : ""}.</b> Para se inscrever em novas vagas, escolha a vaga e refaça os testes. Você poderá manter ou atualizar as suas informações.</div>`
+      : `<div class="caixa destaque">Você ainda não tem uma inscrição ativa. Escolha uma vaga para começar.</div>`;
+    botoes.push(`<button id="ar-vagas">${area.dados_anteriores ? "Ver vagas e refazer os testes" : "Ver vagas e começar"}</button>`);
   } else if (r.status === "em_andamento") {
     const t = r.testes || {}, d = r.dados || {};
     const passos = [["Dados pessoais", !!d.lgpd_selecao], ["Teste 1 · Interpretação", !!t.interpretacao], ["Formação e Mini-bio", !!d.mini_curriculo],
@@ -618,8 +657,12 @@ async function abrirArea() {
     html = `<div class="caixa destaque"><b>Inscrição em andamento.</b> O seu progresso está salvo; continue de onde parou.<ul class="lista">${passos.map(([n, ok]) => `<li>${ok ? "✅" : "⬜"} ${n}</li>`).join("")}</ul></div>`;
     botoes.push(`<button id="ar-continuar">Continuar inscrição</button>`);
   } else {
-    html = `<div class="caixa destaque"><b>Testes concluídos.</b> Eles valem até <b>${dataBR(r.valida_ate)}</b>. Até lá, você pode se candidatar a outras vagas sem refazê-los.</div>`;
-    botoes.push(`<button id="ar-mais">Candidatar-me a outras vagas</button>`, `<button class="sec" id="ar-editar">Atualizar formação e Mini-bio</button>`);
+    const dias = Math.ceil((new Date(r.valida_ate) - Date.now()) / 864e5);
+    html = dias <= 15
+      ? `<div class="aviso alerta" style="display:block"><b>Seus testes vencem em ${dataBR(r.valida_ate)}${dias > 0 ? ` (faltam ${dias} dia${dias > 1 ? "s" : ""})` : ""}.</b> Até lá, você pode se inscrever em outras vagas sem refazê-los. Depois, será preciso refazer os testes.</div>`
+      : `<div class="caixa destaque"><b>Testes concluídos.</b> Eles valem até <b>${dataBR(r.valida_ate)}</b>. Até lá, você pode se inscrever em outras vagas, uma de cada vez, sem refazê-los.</div>`;
+    if (vagas.some(v => !jaInscrito(v.id))) botoes.push(`<button id="ar-mais">Candidatar-me a outras vagas</button>`);
+    botoes.push(`<button class="sec" id="ar-dados">Editar meus dados</button>`, `<button class="sec" id="ar-editar">Atualizar formação e Mini-bio</button>`);
   }
   $("ar-rodada").innerHTML = html;
   const cls = s => ({ aprovado: "ok", reprovado: "er", nao_classificado: "er", suspenso: "al", desistiu: "" }[s] ?? "al");
@@ -632,6 +675,7 @@ async function abrirArea() {
   if ($("ar-continuar")) $("ar-continuar").onclick = () => seguir(r);
   if ($("ar-mais")) $("ar-mais").onclick = () => { ls.del("vaga_escolhida"); abrirFinal(true); };
   if ($("ar-editar")) $("ar-editar").onclick = () => abrirFormacao(true);
+  if ($("ar-dados")) $("ar-dados").onclick = () => abrirDados(true);
   $("ar-futuro").checked = !!area.interesse_futuro; $("ar-outros").checked = !!area.interesse_outros_projetos;
   $("ar-outros").disabled = !area.interesse_futuro;
 }
@@ -651,17 +695,20 @@ function cpfValido(c) {
   for (let t = 9; t < 11; t++) { let s = 0; for (let i = 0; i < t; i++) s += +c[i] * (t + 1 - i); if (((s * 10) % 11) % 10 !== +c[t]) return false; }
   return true;
 }
-function abrirDados() {
+let edicaoDados = false;
+function abrirDados(edicao) {
+  edicaoDados = !!edicao;
   const d = (area.rodada && area.rodada.dados) || area.dados_anteriores || {};
   $("p-email").textContent = area.email;
   $("p-nome").value = d.nome || area.nome || ""; $("p-nasc").value = d.data_nascimento || "";
   $("p-whats").value = d.whatsapp || d.telefone || ""; $("p-tel").value = d.telefone_2 || "";
   $("p-mun").value = d.municipio || ""; $("p-uf").value = d.uf || "BA"; $("p-linkedin").value = d.linkedin || ""; $("p-pcd").value = d.acessibilidade || "";
   marcar("vinculo_orgao", d.vinculo_orgao); marcar("vinculo_executora", d.vinculo_executora); marcar("parente_projeto", d.parente_projeto);
-  const temCpf = area.rodada && area.rodada.tem_cpf;
+  const temCpf = (area.rodada && area.rodada.tem_cpf) || (!area.rodada && area.tem_cpf_anterior);
   $("p-cpf").value = ""; $("p-cpf").placeholder = temCpf ? "Já informado (preencha só para corrigir)" : "Somente números";
   $("lgpd1").checked = !!d.lgpd_selecao; $("lgpd2").checked = !!d.lgpd_banco_talentos;
-  aviso("a-dados", ""); mostrar("v-dados", 0);
+  $("b-dados").textContent = edicaoDados ? "Salvar alterações" : "Salvar e continuar";
+  aviso("a-dados", ""); mostrar("v-dados", edicaoDados ? null : 0);
 }
 $("f-dados").addEventListener("submit", async ev => {
   ev.preventDefault(); aviso("a-dados", "");
@@ -670,7 +717,7 @@ $("f-dados").addEventListener("submit", async ev => {
     municipio: $("p-mun").value.trim(), uf: $("p-uf").value, linkedin: $("p-linkedin").value.trim(), acessibilidade: $("p-pcd").value.trim(),
     vinculo_orgao: radio("vinculo_orgao"), vinculo_executora: radio("vinculo_executora"), parente_projeto: radio("parente_projeto"),
     lgpd_selecao: $("lgpd1").checked, lgpd_banco_talentos: $("lgpd2").checked };
-  const temCpf = area.rodada && area.rodada.tem_cpf;
+  const temCpf = (area.rodada && area.rodada.tem_cpf) || (!area.rodada && area.tem_cpf_anterior);
   if (d.nome.split(/\s+/).length < 2) return aviso("a-dados", "Informe seu nome completo.");
   if ((!temCpf || d.cpf) && !cpfValido(d.cpf)) return aviso("a-dados", "CPF inválido. Confira os números.");
   if (!d.data_nascimento) return aviso("a-dados", "Informe sua data de nascimento.");
@@ -678,9 +725,15 @@ $("f-dados").addEventListener("submit", async ev => {
   if (!d.municipio) return aviso("a-dados", "Informe o município onde reside.");
   if (!d.vinculo_orgao || !d.vinculo_executora || !d.parente_projeto) return aviso("a-dados", "Responda às três declarações.");
   if (!d.lgpd_selecao) return aviso("a-dados", "Para continuar, é preciso aceitar o uso dos dados para os processos seletivos.");
-  const vaga = ls.get("vaga_escolhida") || (area.rodada && area.rodada.vaga_id) || (vagas[0] && vagas[0].id);
+  const vagaRod = area.rodada && vagas.some(v => v.id === area.rodada.vaga_id) ? area.rodada.vaga_id : null;
+  const vaga = (edicaoDados ? vagaRod : ls.get("vaga_escolhida")) || vagaRod || ls.get("vaga_escolhida") || (vagas[0] && vagas[0].id);
+  if (!d.cpf) delete d.cpf;
   const btn = ev.submitter; btn.disabled = true;
-  try { area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: d }); seguir(area.rodada); }
+  try {
+    area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: d });
+    if (edicaoDados) { await abrirArea(); return aviso("a-area", "Dados atualizados.", "ok"); }
+    seguir(area.rodada);
+  }
   catch (e) { aviso("a-dados", e.message); }
   finally { btn.disabled = false; }
 });
@@ -821,11 +874,17 @@ async function abrirFinal(somenteCandidatar) {
   if (!vagas.length) vagas = await rpc("talentos_vagas") || [];
   if (!ntes.length) ntes = await rpc("talentos_ntes") || [];
   const ja = new Set((area.candidaturas || []).filter(c => c.vigente).map(c => c.vaga_id));
-  const escolhida = ls.get("vaga_escolhida");
-  const disponiveis = vagas.filter(v => !ja.has(v.id));
-  $("fn-titulo").textContent = soCandidatar ? "Candidatar-me a outras vagas" : "Vagas e regiões de interesse";
+  const escolhida = ls.get("vaga_escolhida") || (!soCandidatar && area.rodada && area.rodada.vaga_id) || null;
+  let disponiveis = vagas.filter(v => !ja.has(v.id));
+  if (escolhida && disponiveis.some(v => v.id === escolhida)) disponiveis = disponiveis.filter(v => v.id === escolhida);
+  const unica = disponiveis.length === 1;
+  $("fn-titulo").textContent = soCandidatar ? (unica ? "Confirmar nova inscrição" : "Candidatar-me a outra vaga") : "Confirme a sua inscrição";
+  $("fn-sub").textContent = unica
+    ? (soCandidatar ? "Vamos reaproveitar todas as informações e os testes que você já enviou. Confira a vaga e confirme." : "Confira a vaga escolhida e envie a sua inscrição.")
+    : "Escolha uma vaga por vez. Vamos reaproveitar todas as informações e os testes que você já enviou.";
+  $("b-concluir").textContent = soCandidatar ? "Confirmar inscrição" : "Enviar inscrição";
   $("fn-vagas").innerHTML = disponiveis.length ? disponiveis.map((v, i) => `<div class="escolha vcard tema${i % 4}" data-v="${esc(v.id)}">
-      <label class="topo-esc"><input type="checkbox" class="fv" value="${esc(v.id)}" ${v.id === escolhida ? "checked" : ""}><span style="display:flex;flex-direction:column;gap:6px">${seloVinculo(v)}<h3>${esc(v.titulo)}</h3></span></label>
+      <label class="topo-esc"><input type="checkbox" class="fv${unica ? " oculto" : ""}" value="${esc(v.id)}" ${unica || v.id === escolhida ? "checked" : ""}><span style="display:flex;flex-direction:column;gap:6px">${seloVinculo(v)}<h3>${esc(v.titulo)}</h3></span></label>
       ${infoVaga(v)}
       ${v.tipo_local === "nte" ? `<p class="vc-nota ntes-dica" style="margin:0">Marque esta vaga e indique abaixo as regiões onde você tem disponibilidade para atuar.</p>` : ""}
       ${v.tipo_local === "nte" ? `<div class="ntes oculto">${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}</div>` : ""}
@@ -841,7 +900,10 @@ async function abrirFinal(somenteCandidatar) {
     document.querySelectorAll("#fn-vagas .ntes label").forEach(l => l.classList.toggle("on", l.querySelector("input").checked));
     $("fn-disp").classList.toggle("oculto", !algumaNte);
   };
-  $("fn-vagas").querySelectorAll("input").forEach(i => i.addEventListener("change", atualizar));
+  $("fn-vagas").querySelectorAll("input").forEach(i => i.addEventListener("change", e => {
+    if (e.target.classList.contains("fv") && e.target.checked) document.querySelectorAll("#fn-vagas .fv").forEach(o => { if (o !== e.target) o.checked = false; });
+    atualizar();
+  }));
   const d = (area.rodada && area.rodada.dados) || {};
   marcar("mudanca", d.mudanca); marcar("viagens", d.viagens);
   aviso("a-final", ""); $("b-concluir").disabled = !disponiveis.length;
@@ -858,7 +920,8 @@ $("b-concluir").addEventListener("click", async e => {
     if (v.tipo_local === "nte" && !sel.length) return aviso("a-final", `Marque ao menos uma região de interesse para "${v.titulo}".`);
     escolhas.push({ vaga: v.id, ntes: sel });
   }
-  if (!escolhas.length) return aviso("a-final", "Marque ao menos uma vaga.");
+  if (!escolhas.length) return aviso("a-final", "Escolha uma vaga.");
+  if (escolhas.length > 1) return aviso("a-final", "Escolha uma vaga por vez.");
   let dados = null;
   if (!$("fn-disp").classList.contains("oculto")) {
     if (!radio("mudanca") || !radio("viagens")) return aviso("a-final", "Responda às perguntas de disponibilidade.");
@@ -873,10 +936,12 @@ $("b-concluir").addEventListener("click", async e => {
     $("fim-txt").textContent = "Obrigado por participar! " + (nao.length
       ? `Em ${nao.length === novas.length ? "todas as vagas escolhidas" : "parte das vagas"} o seu perfil não atende a algum pré-requisito, mas os seus dados ficam no banco de talentos. Acompanhe a situação na sua área.`
       : "Você está classificado(a) e a equipe de seleção entrará em contato pelo e-mail informado. Acompanhe a situação na sua área.");
+    $("b-outras").classList.toggle("oculto", !vagas.some(v => !jaInscrito(v.id)));
     mostrar("v-fim");
   } catch (err) { aviso("a-final", err.message); } finally { e.target.disabled = false; }
 });
 $("b-ir-area").addEventListener("click", abrirArea);
+$("b-outras").addEventListener("click", () => { ls.del("vaga_escolhida"); abrirFinal(true); });
 
 // ---------- respostas aos e-mails (?r=token&v=resposta)
 async function responder(token, valor) {
