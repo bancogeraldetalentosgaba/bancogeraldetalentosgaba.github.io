@@ -405,6 +405,13 @@
 </div>
 
 <script>
+const VERSAO = "2026-11-24.1";
+// a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
+(async () => { try {
+  const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
+  const m = t.match(/const VERSAO = "([^"]+)"/);
+  if (m && m[1] !== VERSAO && !sessionStorage.getItem("recarregou-" + m[1])) { sessionStorage.setItem("recarregou-" + m[1], "1"); location.reload(); }
+} catch {} })();
 const SUPABASE_URL = "https://bjlhmkwxlrvatnlwjcln.supabase.co";
 const CHAVE_PUBLICA = "sb_publishable_s4_6UV8RA2bFOH0BfR9jLw_EC4VV1N1";
 const GOOGLE_CLIENT = "711060191298-tpmo05p75bheb0m9717tqfc4qsrhb9mo.apps.googleusercontent.com";
