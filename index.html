@@ -69,6 +69,28 @@
   .escolha.vcard.on{border-color:var(--cor);box-shadow:0 0 0 2px var(--cor) inset}
   .escolha .topo-esc{display:flex;gap:12px;align-items:flex-start}
   .escolha .topo-esc input{width:20px;height:20px;margin-top:2px;accent-color:var(--cor);flex:none}
+  /* cards coloridos, no modelo do destaque da tela inicial */
+  .vcard.tema0,.vcard.tema1,.vcard.tema2,.vcard.tema3{color:#fff;border:0;box-shadow:0 6px 18px rgba(60,10,40,.18)}
+  .vcard.tema0{background:linear-gradient(125deg,#9c0b56 0%,#c40f6d 45%,#e71181 100%)}
+  .vcard.tema1{background:linear-gradient(125deg,#b34f00 0%,#d96a04 45%,#ee7f08 100%)}
+  .vcard.tema2{background:linear-gradient(125deg,#4f7a0c 0%,#6f9e14 45%,#92c01f 100%)}
+  .vcard.tema3{background:linear-gradient(125deg,#5a1f78 0%,#83288f 45%,#b5309b 100%)}
+  .vcard[class*="tema"]::before{content:"";position:absolute;top:-60px;right:-60px;left:auto;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.14)}
+  .vcard[class*="tema"]::after{content:"";position:absolute;right:30px;bottom:-80px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none}
+  .vcard[class*="tema"] > *{position:relative;z-index:1}
+  .vaga.vcard[class*="tema"]:hover{background-size:100%;filter:brightness(1.05);transform:translateY(-2px)}
+  .vcard[class*="tema"] h3,.vcard[class*="tema"] .vc-info li,.vcard[class*="tema"] .cta{color:#fff}
+  .vcard[class*="tema"] .resumo{color:rgba(255,255,255,.92)}
+  .vcard[class*="tema"] .vc-info svg{color:#fff}
+  .vcard[class*="tema"] .vc-nota{background:rgba(255,255,255,.18);color:#fff}
+  .vcard[class*="tema"] .vinc{background:rgba(255,255,255,.22);color:#fff}
+  .vcard[class*="tema"] .cta{display:inline-block;align-self:flex-start;background:#fff;color:#7a0943;padding:8px 14px;border-radius:999px;margin-top:auto}
+  .vcard.tema1 .cta{color:#8a3d00}.vcard.tema2 .cta{color:#3d5f08}.vcard.tema3 .cta{color:#4a1a63}
+  .escolha.vcard[class*="tema"] .topo-esc input{accent-color:#fff}
+  .escolha.vcard[class*="tema"].on{box-shadow:0 0 0 3px #fff inset,0 8px 22px rgba(60,10,40,.25)}
+  .escolha.vcard[class*="tema"] .ntes label{color:var(--texto)}
+  #fn-vagas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;align-items:start;margin:10px 0}
+  #fn-vagas .escolha{margin:0}
   .etiqueta{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--cor-suave);color:var(--cor-forte)}
   ul.lista{margin:6px 0 0;padding-left:20px;line-height:1.55;font-size:14.5px}
   .etapas{display:flex;gap:5px;margin-bottom:18px}.etapas i{flex:1;height:4px;border-radius:4px;background:var(--cor-suave)}.etapas i.on{background:var(--magenta)}
@@ -100,7 +122,7 @@
   .st{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#eef2f6;color:#475467;white-space:nowrap}
   .st.ok{background:var(--ok-fundo);color:var(--ok)} .st.al{background:var(--alerta-fundo);color:var(--alerta)} .st.er{background:var(--erro-fundo);color:var(--erro)}
   .escolha{border:1px solid var(--borda);border-radius:var(--raio);padding:12px 14px;margin:10px 0}
-  .escolha.on{border-color:var(--cor);background:#fffafd}
+  .escolha.on:not([class*="tema"]){border-color:var(--cor);background:#fffafd}
   .escolha > label.check{margin:0;font-weight:600}
   .ntes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
   .ntes label{margin:0;font-weight:500;font-size:13px;border:1px solid var(--borda);border-radius:999px;padding:6px 11px;cursor:pointer;display:flex;gap:6px;align-items:center;background:#fff}
@@ -180,7 +202,7 @@
   <!-- VAGAS -->
   <section id="v-vagas" class="oculto">
     <h1>Vagas abertas</h1>
-    <p class="sub">Escolha uma vaga para ver a descrição completa. Você pode se candidatar a mais de uma vaga. A primeira inscrição leva cerca de 40 minutos, com dois testes cronometrados de 10 minutos cada.</p>
+    <p class="sub">Escolha uma vaga para ver a descrição completa. Você pode se candidatar a mais de uma vaga.</p>
     <div class="vagas" id="lista-vagas"><p class="sub">Carregando…</p></div>
     <div class="aviso" id="a-vagas"></div>
     <div class="acoes"><button class="sec" data-ir="v-inicio">Voltar ao início</button></div>
@@ -339,10 +361,10 @@
   <!-- ESCOLHA DAS VAGAS E ENVIO -->
   <section id="v-final" class="oculto">
     <h1 id="fn-titulo">Vagas e regiões de interesse</h1>
-    <p class="sub">Marque as vagas para as quais quer se candidatar. Nas vagas dos NTE, a atuação pode ser em várias regiões da Bahia: indique os NTE onde você tem disponibilidade. As vagas da equipe base são sempre em Salvador.</p>
+    <p class="sub">Marque as vagas para as quais quer se candidatar. Em algumas vagas, a atuação pode ser em várias regiões da Bahia: indique as regiões onde você tem disponibilidade. As vagas da equipe base são sempre em Salvador.</p>
     <div id="fn-vagas"></div>
     <div id="fn-disp">
-      <label>Tem disponibilidade para residir no município sede do NTE em que for atuar?</label>
+      <label>Tem disponibilidade para residir na região em que for atuar?</label>
       <div class="opcoes"><label><input type="radio" name="mudanca" value="reside"> Já resido lá</label><label><input type="radio" name="mudanca" value="sim"> Sim, posso me mudar</label><label><input type="radio" name="mudanca" value="nao"> Não</label></div>
       <label>Tem disponibilidade para viagens?</label>
       <div class="opcoes"><label><input type="radio" name="viagens" value="true"> Sim</label><label><input type="radio" name="viagens" value="false"> Não</label></div>
@@ -455,8 +477,8 @@ async function abrirVagas() {
   mostrar("v-vagas");
   try {
     vagas = await rpc("talentos_vagas") || [];
-    $("lista-vagas").innerHTML = vagas.length ? vagas.map(v => `
-      <button class="vaga vcard" data-id="${esc(v.id)}">
+    $("lista-vagas").innerHTML = vagas.length ? vagas.map((v, i) => `
+      <button class="vaga vcard tema${i % 4}" data-id="${esc(v.id)}">
         ${seloVinculo(v)}
         <h3>${esc(v.titulo)}</h3>
         ${v.resumo ? `<span class="resumo">${esc(v.resumo)}</span>` : ""}
@@ -476,7 +498,7 @@ function jornadaVaga(v) {
   if (!v.horas_semanais) return v.jornada || "";
   return `${v.horas_semanais}h semanais` + (v.formato ? ` · ${v.formato}` : "") + (v.turno ? ` (${v.turno})` : "");
 }
-function localVaga(v) { return v.tipo_local === "salvador" ? "Salvador · equipe base" : "Várias regiões da Bahia (NTE)"; }
+function localVaga(v) { return v.tipo_local === "salvador" ? "Salvador · equipe base" : "Várias regiões da Bahia"; }
 function seloVinculo(v) {
   if (!v.vinculo) return "";
   const c = /rpa/i.test(v.vinculo) ? " rpa" : /est/i.test(v.vinculo) ? " est" : "";
@@ -489,8 +511,9 @@ function infoVaga(v) {
     <li>${ICO.local}<span>${esc(localVaga(v))}</span></li>
   </ul>`;
 }
+const regiao = n => String(n || "").replace(/^NTE\s*\d+\s*[-–]\s*/i, "");
 const NOTA_NTE = "Atuação em várias regiões da Bahia: sua disponibilidade por região será consultada durante a inscrição.";
-function ctaVaga(v) { return v && v.modalidade === "previsto" ? "Inscreva-se no processo seletivo" : "Inscreva-se no Banco de Talentos"; }
+function ctaVaga(v) { return v && v.modalidade === "previsto" ? "Inscreva-se" : "Inscreva-se no Banco de Talentos"; }
 function abrirVaga(id) {
   vagaAtual = vagas.find(v => v.id === id); if (!vagaAtual) return;
   $("d-titulo").textContent = vagaAtual.titulo;
@@ -594,7 +617,7 @@ async function abrirArea() {
   $("ar-rodada").innerHTML = html;
   const cls = s => ({ aprovado: "ok", reprovado: "er", nao_classificado: "er", suspenso: "al", desistiu: "" }[s] ?? "al");
   $("ar-cands").innerHTML = (area.candidaturas || []).length ? area.candidaturas.map(c => `<div class="caixa"><div class="linha-cand"><div><b>${esc(c.titulo)}</b>
-      <small>${c.ntes && c.ntes.length ? "Regiões: " + esc(c.ntes.join(", ")) + " · " : ""}enviada em ${dataBR(c.criado_em)}${c.modalidade === "reserva" && c.valida_ate && !["expirada","desistiu","reprovado"].includes(c.status) ? " · Banco de Talentos até " + dataBR(c.valida_ate) : ""}</small></div>
+      <small>${c.ntes && c.ntes.length ? "Regiões: " + esc(c.ntes.map(regiao).join(", ")) + " · " : ""}enviada em ${dataBR(c.criado_em)}${c.modalidade === "reserva" && c.valida_ate && !["expirada","desistiu","reprovado"].includes(c.status) ? " · Banco de Talentos até " + dataBR(c.valida_ate) : ""}</small></div>
       <span class="st ${cls(c.status)}">${esc(c.situacao)}</span></div></div>`).join("")
     : `<p class="mini">Nenhuma candidatura enviada ainda.</p>`;
   $("ar-acoes").innerHTML = botoes.join("");
@@ -794,18 +817,18 @@ async function abrirFinal(somenteCandidatar) {
   const escolhida = ls.get("vaga_escolhida");
   const disponiveis = vagas.filter(v => !ja.has(v.id));
   $("fn-titulo").textContent = soCandidatar ? "Candidatar-me a outras vagas" : "Vagas e regiões de interesse";
-  $("fn-vagas").innerHTML = disponiveis.length ? disponiveis.map(v => `<div class="escolha vcard" data-v="${esc(v.id)}">
+  $("fn-vagas").innerHTML = disponiveis.length ? disponiveis.map((v, i) => `<div class="escolha vcard tema${i % 4}" data-v="${esc(v.id)}">
       <label class="topo-esc"><input type="checkbox" class="fv" value="${esc(v.id)}" ${v.id === escolhida ? "checked" : ""}><span style="display:flex;flex-direction:column;gap:6px">${seloVinculo(v)}<h3>${esc(v.titulo)}</h3></span></label>
       ${infoVaga(v)}
-      ${v.tipo_local === "nte" ? `<p class="vc-nota ntes-dica" style="margin:0">Marque esta vaga e indique abaixo os NTE onde você tem disponibilidade para atuar.</p>` : ""}
-      ${v.tipo_local === "nte" ? `<div class="ntes oculto">${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(n.nome.replace(/^NTE (\d+) - /, "$1 · "))}</label>`).join("")}</div>` : ""}
+      ${v.tipo_local === "nte" ? `<p class="vc-nota ntes-dica" style="margin:0">Marque esta vaga e indique abaixo as regiões onde você tem disponibilidade para atuar.</p>` : ""}
+      ${v.tipo_local === "nte" ? `<div class="ntes oculto">${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}</div>` : ""}
     </div>`).join("") : `<p class="sub">Você já se candidatou a todas as vagas abertas.</p>`;
   const atualizar = () => {
     let algumaNte = false;
     document.querySelectorAll("#fn-vagas .escolha").forEach(div => {
       const on = div.querySelector(".fv").checked; div.classList.toggle("on", on);
       const n = div.querySelector(".ntes"); if (n) n.classList.toggle("oculto", !on);
-      const dc = div.querySelector(".ntes-dica"); if (dc) dc.textContent = on ? "Indique os NTE onde você tem disponibilidade para atuar:" : "Marque esta vaga e indique os NTE onde você tem disponibilidade para atuar.";
+      const dc = div.querySelector(".ntes-dica"); if (dc) dc.textContent = on ? "Indique as regiões onde você tem disponibilidade para atuar:" : "Marque esta vaga e indique abaixo as regiões onde você tem disponibilidade para atuar.";
       if (on && n) algumaNte = true;
     });
     document.querySelectorAll("#fn-vagas .ntes label").forEach(l => l.classList.toggle("on", l.querySelector("input").checked));
@@ -825,7 +848,7 @@ $("b-concluir").addEventListener("click", async e => {
     if (!div.querySelector(".fv").checked) continue;
     const v = vagas.find(x => x.id === div.dataset.v);
     const sel = [...div.querySelectorAll(".ntes input:checked")].map(i => +i.value);
-    if (v.tipo_local === "nte" && !sel.length) return aviso("a-final", `Marque ao menos um NTE de interesse para "${v.titulo}".`);
+    if (v.tipo_local === "nte" && !sel.length) return aviso("a-final", `Marque ao menos uma região de interesse para "${v.titulo}".`);
     escolhas.push({ vaga: v.id, ntes: sel });
   }
   if (!escolhas.length) return aviso("a-final", "Marque ao menos uma vaga.");
