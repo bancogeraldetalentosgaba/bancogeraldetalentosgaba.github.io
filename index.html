@@ -90,6 +90,7 @@
   .escolha.vcard[class*="tema"] .topo-esc input{accent-color:#fff}
   .escolha.vcard[class*="tema"].on{box-shadow:0 0 0 3px #fff inset,0 8px 22px rgba(60,10,40,.25)}
   .escolha.vcard[class*="tema"] .ntes label{color:var(--texto)}
+  .escolha.vcard[class*="tema"] .ntes .ver-mapa{color:#fff}
   #fn-vagas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;align-items:start;margin:10px 0}
   #fn-vagas .escolha{margin:0}
   .etiqueta{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--cor-suave);color:var(--cor-forte)}
@@ -129,6 +130,8 @@
   .ntes label{margin:0;font-weight:500;font-size:13px;border:1px solid var(--borda);border-radius:999px;padding:6px 11px;cursor:pointer;display:flex;gap:6px;align-items:center;background:#fff}
   .ntes label.on{background:var(--cor-suave);border-color:var(--cor);color:var(--cor-forte)}
   .ntes input{accent-color:var(--cor)}
+  .ntes label.todas-lbl{font-weight:700;border-style:dashed}
+  .ntes .ver-mapa{flex-basis:100%;margin-top:6px;font-size:14px;font-weight:600;color:var(--cor-forte);text-decoration:underline;text-underline-offset:3px}
   .mini{font-size:12.5px;color:var(--texto-2)}
   .local{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:600;color:var(--cor-forte)}
   .hero{position:relative;border-radius:14px;padding:30px 26px 28px;margin:4px 0 22px;color:#fff;overflow:hidden;
@@ -376,10 +379,9 @@
     <p class="sub oculto">Marque as vagas para as quais quer se candidatar. Em algumas vagas, a atuação pode ser em várias regiões da Bahia: indique as regiões onde você tem disponibilidade. As vagas da equipe base são sempre em Salvador.</p>
     <div id="fn-vagas"></div>
     <div id="fn-disp">
-      <label>Tem disponibilidade para residir na região em que for atuar?</label>
-      <div class="opcoes"><label><input type="radio" name="mudanca" value="reside"> Já resido lá</label><label><input type="radio" name="mudanca" value="sim"> Sim, posso me mudar</label><label><input type="radio" name="mudanca" value="nao"> Não</label></div>
-      <label>Tem disponibilidade para viagens?</label>
-      <div class="opcoes"><label><input type="radio" name="viagens" value="true"> Sim</label><label><input type="radio" name="viagens" value="false"> Não</label></div>
+      <label>Tem disponibilidade para residir onde selecionou?</label>
+      <div class="opcoes"><label><input type="radio" name="mudanca" value="reside"> Sim, já resido</label><label><input type="radio" name="mudanca" value="sim"> Sim, posso mudar</label><label><input type="radio" name="mudanca" value="nao"> Não</label></div>
+      <p class="vc-nota" style="margin:8px 0 0">O projeto não se responsabiliza pelos custos com mudança.</p>
     </div>
     <div class="aviso" id="a-final"></div>
     <div class="acoes"><button class="sec" data-ir="v-area">Voltar</button><button id="b-concluir">Enviar inscrição</button></div>
@@ -417,7 +419,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.3";
+const VERSAO = "2026-11-24.4";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -887,7 +889,7 @@ async function abrirFinal(somenteCandidatar) {
       <label class="topo-esc"><input type="checkbox" class="fv${unica ? " oculto" : ""}" value="${esc(v.id)}" ${unica || v.id === escolhida ? "checked" : ""}><span style="display:flex;flex-direction:column;gap:6px">${seloVinculo(v)}<h3>${esc(v.titulo)}</h3></span></label>
       ${infoVaga(v)}
       ${v.tipo_local === "nte" ? `<p class="vc-nota ntes-dica" style="margin:0">Marque esta vaga e indique abaixo as regiões onde você tem disponibilidade para atuar.</p>` : ""}
-      ${v.tipo_local === "nte" ? `<div class="ntes oculto">${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}</div>` : ""}
+      ${v.tipo_local === "nte" ? `<div class="ntes oculto"><label class="todas-lbl"><input type="checkbox" class="todas"> Marcar todas</label>${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}<a class="ver-mapa" href="mapa.html" target="_blank" rel="noopener">🗺️ Ver o mapa das regiões</a></div>` : ""}
     </div>`).join("") : `<p class="sub">Você já se candidatou a todas as vagas disponíveis.</p>`;
   const atualizar = () => {
     let algumaNte = false;
@@ -902,10 +904,16 @@ async function abrirFinal(somenteCandidatar) {
   };
   $("fn-vagas").querySelectorAll("input").forEach(i => i.addEventListener("change", e => {
     if (e.target.classList.contains("fv") && e.target.checked) document.querySelectorAll("#fn-vagas .fv").forEach(o => { if (o !== e.target) o.checked = false; });
+    const bloco = e.target.closest(".ntes");
+    if (bloco) {
+      const regs = [...bloco.querySelectorAll("input:not(.todas)")], todas = bloco.querySelector(".todas");
+      if (e.target === todas) regs.forEach(r => r.checked = todas.checked);
+      else todas.checked = regs.every(r => r.checked);
+    }
     atualizar();
   }));
   const d = (area.rodada && area.rodada.dados) || {};
-  marcar("mudanca", d.mudanca); marcar("viagens", d.viagens);
+  marcar("mudanca", d.mudanca);
   aviso("a-final", ""); $("b-concluir").disabled = !disponiveis.length;
   atualizar();
   mostrar("v-final", soCandidatar ? null : 5);
@@ -916,7 +924,7 @@ $("b-concluir").addEventListener("click", async e => {
   for (const div of document.querySelectorAll("#fn-vagas .escolha")) {
     if (!div.querySelector(".fv").checked) continue;
     const v = vagas.find(x => x.id === div.dataset.v);
-    const sel = [...div.querySelectorAll(".ntes input:checked")].map(i => +i.value);
+    const sel = [...div.querySelectorAll(".ntes input:not(.todas):checked")].map(i => +i.value);
     if (v.tipo_local === "nte" && !sel.length) return aviso("a-final", `Marque ao menos uma região de interesse para "${v.titulo}".`);
     escolhas.push({ vaga: v.id, ntes: sel });
   }
@@ -924,8 +932,8 @@ $("b-concluir").addEventListener("click", async e => {
   if (escolhas.length > 1) return aviso("a-final", "Escolha uma vaga por vez.");
   let dados = null;
   if (!$("fn-disp").classList.contains("oculto")) {
-    if (!radio("mudanca") || !radio("viagens")) return aviso("a-final", "Responda às perguntas de disponibilidade.");
-    dados = { mudanca: radio("mudanca"), viagens: radio("viagens") === "true" };
+    if (!radio("mudanca")) return aviso("a-final", "Responda às perguntas de disponibilidade.");
+    dados = { mudanca: radio("mudanca") };
   }
   e.target.disabled = true;
   try {
