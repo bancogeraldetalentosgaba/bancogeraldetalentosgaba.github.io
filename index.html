@@ -89,23 +89,66 @@
   .ntes input{accent-color:var(--cor)}
   .mini{font-size:12.5px;color:var(--texto-2)}
   .local{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:600;color:var(--cor-forte)}
+  .hero{position:relative;border-radius:14px;padding:30px 26px 28px;margin:4px 0 22px;color:#fff;overflow:hidden;
+    background:linear-gradient(125deg,#9c0b56 0%,#c40f6d 45%,#e71181 100%)}
+  .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(238,127,8,.35)}
+  .hero::before{content:"";position:absolute;right:40px;bottom:-90px;width:170px;height:170px;border-radius:50%;background:rgba(146,192,31,.35)}
+  .hero > *{position:relative;z-index:1}
+  .hero .etq{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(255,255,255,.18);padding:5px 11px;border-radius:999px}
+  .hero h1{font-size:26px;line-height:1.25;margin:14px 0 10px;max-width:520px}
+  .hero p{margin:0 0 22px;font-size:15.5px;line-height:1.55;max-width:540px;opacity:.95}
+  .hero button{background:#fff;color:var(--cor-forte);min-width:200px}
+  .hero button:hover{background:var(--cor-suave)}
+  @media(max-width:560px){.hero{padding:24px 18px}.hero h1{font-size:22px}.hero button{width:100%}}
+  .passos3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:6px 0 8px}
+  @media(max-width:620px){.passos3{grid-template-columns:1fr}}
+  .passo{border:1px solid var(--borda);border-radius:var(--raio);padding:16px;background:#fff}
+  .passo .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;margin-bottom:10px}
+  .passo:nth-child(1) .n{background:var(--magenta)}.passo:nth-child(2) .n{background:var(--laranja)}.passo:nth-child(3) .n{background:var(--verde)}
+  .passo b{display:block;font-size:15px;margin-bottom:4px}.passo span{font-size:13.5px;color:var(--texto-2);line-height:1.5}
+  .sobre{border-left:4px solid var(--magenta);padding:4px 0 4px 14px;margin:22px 0 4px;font-size:14.5px;line-height:1.6;color:var(--texto)}
+  .modal{position:fixed;inset:0;z-index:50;background:rgba(17,24,39,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+  .modal-box{position:relative;overflow:hidden;width:100%;max-width:440px;background:#fff;border-radius:16px;padding:30px 24px 22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .modal-box::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--magenta) 0 34%,var(--laranja) 34% 67%,var(--verde) 67% 100%)}
+  .modal-box h2{font-size:20px;margin:4px 0 8px}
+  .modal-box .fechar{position:absolute;top:12px;right:12px;width:34px;height:34px;padding:0;border-radius:50%;background:#fff;color:var(--texto-2);border:1px solid var(--borda);font-size:18px;line-height:1}
+  .modal-box .fechar:hover{background:var(--cor-suave)}
+  .modal-box ul{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.55;color:var(--texto-2)}
 </style>
 </head>
 <body>
 <main class="cartao">
-  <div class="marca">
+  <div class="marca" id="marca" style="cursor:pointer" title="Início">
     <div class="selo">GA</div>
     <div><b>Trabalhe Conosco</b><span>Banco de Talentos · Projeto GA BA</span></div>
   </div>
   <div class="topbar" id="topbar"></div>
   <div class="etapas oculto" id="etapas"></div>
 
+  <!-- INÍCIO -->
+  <section id="v-inicio">
+    <div class="hero">
+      <span class="etq" id="h-etq">Trabalhe conosco</span>
+      <h1>Faça parte do time que fortalece a aprendizagem na Bahia</h1>
+      <p>Buscamos profissionais comprometidos com a educação pública para atuar junto às escolas e às equipes educacionais em todo o estado.</p>
+      <button id="b-ver-vagas">Ver as vagas</button>
+    </div>
+    <h2>Como funciona a seleção</h2>
+    <div class="passos3">
+      <div class="passo"><div class="n">1</div><b>Conheça as vagas</b><span>Veja as atribuições, os pré-requisitos e o local de atuação de cada vaga.</span></div>
+      <div class="passo"><div class="n">2</div><b>Inscreva-se online</b><span>Preencha seus dados e faça dois testes curtos e cronometrados, de 10 minutos cada.</span></div>
+      <div class="passo"><div class="n">3</div><b>Acompanhe o processo</b><span>Seu progresso fica salvo e você acompanha cada etapa pela sua área.</span></div>
+    </div>
+    <p class="sobre">O <b>Projeto GA BA</b> atua na gestão da aprendizagem, apoiando escolas e equipes educacionais com acompanhamento pedagógico, formação e uso de dados para que cada estudante aprenda mais.</p>
+  </section>
+
   <!-- VAGAS -->
-  <section id="v-vagas">
+  <section id="v-vagas" class="oculto">
     <h1>Vagas abertas</h1>
-    <p class="sub">Escolha uma vaga para ver a descrição completa. Para se candidatar, entre com a sua conta Google: o seu progresso fica salvo e você pode se candidatar a mais de uma vaga. A primeira inscrição leva cerca de 40 minutos, com dois testes cronometrados de 10 minutos cada.</p>
+    <p class="sub">Escolha uma vaga para ver a descrição completa. Você pode se candidatar a mais de uma vaga. A primeira inscrição leva cerca de 40 minutos, com dois testes cronometrados de 10 minutos cada.</p>
     <div class="vagas" id="lista-vagas"><p class="sub">Carregando…</p></div>
     <div class="aviso" id="a-vagas"></div>
+    <div class="acoes"><button class="sec" data-ir="v-inicio">Voltar ao início</button></div>
   </section>
 
   <!-- DETALHE DA VAGA -->
@@ -128,15 +171,6 @@
     </ul>
     <div class="aviso" id="a-vaga"></div>
     <div class="acoes"><button class="sec" data-ir="v-vagas">Voltar</button><button id="b-quero">Quero me candidatar</button></div>
-  </section>
-
-  <!-- LOGIN -->
-  <section id="v-login" class="oculto">
-    <h1>Entre com a sua conta Google</h1>
-    <p class="sub">Não precisa de senha. Usamos apenas o seu nome e e-mail do Google para guardar o seu progresso e enviar os retornos da seleção. Se você entrar com outra conta, será uma nova inscrição, com os testes refeitos.</p>
-    <div class="gbtn" id="g-botao"></div>
-    <div class="aviso" id="a-login"></div>
-    <div class="acoes"><button class="sec" data-ir="v-vagas">Ver as vagas</button></div>
   </section>
 
   <!-- MINHA ÁREA -->
@@ -297,8 +331,22 @@
     <div class="acoes"><button class="sec" data-ir="v-vagas">Ver vagas abertas</button></div>
   </section>
 
-  <p class="rodape">Projeto GA BA · Banco de Talentos<br>Seus dados são tratados conforme a LGPD.</p>
+  <p class="rodape">Projeto GA BA · Banco de Talentos</p>
 </main>
+
+<div class="modal oculto" id="m-login" role="dialog" aria-modal="true" aria-labelledby="m-login-t">
+  <div class="modal-box">
+    <button class="fechar" id="m-fechar" aria-label="Fechar">×</button>
+    <h2 id="m-login-t">Entre com a sua conta Google</h2>
+    <p class="sub" style="margin-bottom:6px">Para ver as vagas e se candidatar, entre com a sua conta Google. Não precisa criar senha.</p>
+    <ul>
+      <li>Usamos apenas o seu nome e e-mail do Google para guardar o seu progresso e enviar os retornos da seleção.</li>
+      <li>Use sempre a mesma conta: com outra conta, a inscrição começa do zero e os testes precisam ser refeitos.</li>
+    </ul>
+    <div class="gbtn" id="g-botao"></div>
+    <div class="aviso" id="a-login"></div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = "https://bjlhmkwxlrvatnlwjcln.supabase.co";
@@ -336,7 +384,9 @@ function mostrar(id, etapa) {
 function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function radio(nome) { const r = document.querySelector(`input[name="${nome}"]:checked`); return r ? r.value : null; }
 function marcar(nome, valor) { if (valor == null) return; const r = document.querySelector(`input[name="${nome}"][value="${String(valor)}"]`); if (r) r.checked = true; }
-document.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => b.dataset.ir === "v-area" ? abrirArea() : (b.dataset.ir === "v-vagas" ? abrirVagas() : mostrar(b.dataset.ir))));
+document.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => b.dataset.ir === "v-area" ? abrirArea()
+  : b.dataset.ir === "v-vagas" ? (sessao() ? abrirVagas() : (abrirInicio(), abrirLogin("vagas")))
+  : b.dataset.ir === "v-inicio" ? abrirInicio() : mostrar(b.dataset.ir)));
 const dataBR = d => d ? new Date(d).toLocaleDateString("pt-BR") : "";
 
 // ---------- barra do topo (login)
@@ -344,9 +394,9 @@ function desenharTopo() {
   const s = sessao(), em = ls.get("email");
   $("topbar").innerHTML = s
     ? `<span>Conectado(a) como <b>${esc(em || "")}</b></span><span style="display:flex;gap:6px"><button class="sec" id="tb-area">Minha área</button><button class="sec" id="tb-sair">Sair</button></span>`
-    : `<span>Já se candidatou? Entre para acompanhar.</span><button class="sec" id="tb-entrar">Entrar com Google</button>`;
+    : "";
+  $("topbar").classList.toggle("oculto", !s);
   if (s) { $("tb-area").onclick = abrirArea; $("tb-sair").onclick = () => sair(false); }
-  else $("tb-entrar").onclick = () => abrirLogin(null);
 }
 function sair(expirou) {
   const s = sessao();
@@ -354,9 +404,18 @@ function sair(expirou) {
   ["sessao", "email"].forEach(ls.del); area = null;
   try { google.accounts.id.disableAutoSelect(); } catch {}
   desenharTopo();
-  if (expirou) { abrirLogin(null); aviso("a-login", "Sua sessão expirou. Entre novamente.", "alerta"); }
-  else abrirVagas();
+  if (expirou) { abrirInicio(); abrirLogin(null); aviso("a-login", "Sua sessão expirou. Entre novamente.", "alerta"); }
+  else abrirInicio();
 }
+
+// ---------- início
+$("marca").addEventListener("click", () => { if (!(teste && teste.questoes)) abrirInicio(); });
+function abrirInicio() {
+  mostrar("v-inicio");
+  const n = (vagas || []).reduce((t, v) => t + (Number(v.vagas_abertas) || 0), 0);
+  $("h-etq").textContent = n ? `${n} ${n == 1 ? "vaga aberta" : "vagas abertas"}` : "Trabalhe conosco";
+}
+$("b-ver-vagas").addEventListener("click", () => sessao() ? abrirVagas() : abrirLogin("vagas"));
 
 // ---------- vagas
 async function abrirVagas() {
@@ -391,8 +450,14 @@ $("b-quero").addEventListener("click", () => {
 });
 
 // ---------- login Google
-function abrirLogin() {
-  mostrar("v-login"); aviso("a-login", "");
+let destinoLogin = null;
+function fecharLogin() { $("m-login").classList.add("oculto"); }
+$("m-fechar").addEventListener("click", fecharLogin);
+$("m-login").addEventListener("click", e => { if (e.target.id === "m-login") fecharLogin(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") fecharLogin(); });
+function abrirLogin(destino) {
+  destinoLogin = destino || null;
+  $("m-login").classList.remove("oculto"); aviso("a-login", "");
   const montar = () => {
     if (!window.google || !google.accounts) return setTimeout(montar, 300);
     google.accounts.id.initialize({ client_id: GOOGLE_CLIENT, callback: aoEntrar, ux_mode: "popup", auto_select: false, cancel_on_tap_outside: true });
@@ -409,7 +474,12 @@ async function aoEntrar(resp) {
     const d = await r.json();
     if (!r.ok) throw new Error(d.erro || "Não foi possível entrar.");
     ls.set("sessao", d.sessao); ls.set("email", d.email);
-    desenharTopo(); aviso("a-login", "");
+    desenharTopo(); aviso("a-login", ""); fecharLogin();
+    if (destinoLogin === "vagas") {
+      try { await carregarArea(); } catch { return; }
+      if (area.rodada && area.rodada.status === "em_andamento") return seguir(area.rodada);
+      return abrirVagas();
+    }
     continuar();
   } catch (e) { aviso("a-login", e.message); }
 }
@@ -442,7 +512,7 @@ let vagaRodada = null;
 
 // ---------- minha área
 async function abrirArea() {
-  if (!sessao()) return abrirLogin();
+  if (!sessao()) { abrirInicio(); return abrirLogin(null); }
   try { await carregarArea(); } catch (e) { return; }
   mostrar("v-area"); aviso("a-area", "");
   const r = area.rodada;
@@ -733,7 +803,7 @@ window.addEventListener("beforeunload", ev => { if (teste && teste.questoes && !
   const q = new URLSearchParams(location.search);
   if (q.get("r") && q.get("v")) return responder(q.get("r"), q.get("v"));
   try { vagas = await rpc("talentos_vagas") || []; } catch {}
-  if (sessao()) { continuar(); } else abrirVagas();
+  abrirInicio();
 })();
 </script>
 </body>
