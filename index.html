@@ -203,7 +203,7 @@
 
   <!-- VAGAS -->
   <section id="v-vagas" class="oculto">
-    <h1>Vagas abertas</h1>
+    <h1>Candidate-se</h1>
     <p class="sub">Escolha uma vaga para ver a descrição completa. Você pode se candidatar a mais de uma vaga.</p>
     <div class="vagas" id="lista-vagas"><p class="sub">Carregando…</p></div>
     <div class="aviso" id="a-vagas"></div>
@@ -396,7 +396,7 @@
     <h1>Resposta registrada</h1>
     <p class="sub" id="rs-msg">Registrando…</p>
     <div class="aviso" id="a-resposta"></div>
-    <div class="acoes"><button class="sec" data-ir="v-vagas">Ver vagas abertas</button></div>
+    <div class="acoes"><button class="sec" data-ir="v-vagas">Ver as vagas</button></div>
   </section>
 
   <p class="rodape">Projeto GA BA · Banco de Talentos</p>
@@ -417,7 +417,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.2";
+const VERSAO = "2026-11-24.3";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -488,7 +488,7 @@ $("tb-minha").addEventListener("click", e => { e.stopPropagation(); if (teste &&
 $("marca").addEventListener("click", () => { if (!(teste && teste.questoes)) abrirInicio(); });
 function abrirInicio() {
   mostrar("v-inicio");
-  $("h-etq").textContent = (vagas || []).length ? "Vagas abertas" : "Trabalhe conosco";
+  $("h-etq").textContent = (vagas || []).length ? "Candidate-se" : "Trabalhe conosco";
 }
 $("b-ver-vagas").addEventListener("click", () => sessao() ? abrirVagas() : abrirLogin("vagas"));
 
@@ -505,7 +505,7 @@ async function abrirVagas() {
         ${infoVaga(v)}
         ${v.tipo_local === "nte" ? `<span class="vc-nota">${NOTA_NTE}</span>` : ""}
         <span class="cta">${ctaVaga(v)} →</span>
-      </button>`).join("") : `<p class="sub">No momento não há vagas abertas. Volte em breve!</p>`;
+      </button>`).join("") : `<p class="sub">No momento não há oportunidades disponíveis. Volte em breve!</p>`;
     document.querySelectorAll(".vaga").forEach(b => b.addEventListener("click", () => abrirVaga(b.dataset.id)));
   } catch (e) { $("lista-vagas").innerHTML = ""; aviso("a-vagas", e.message); }
 }
@@ -888,7 +888,7 @@ async function abrirFinal(somenteCandidatar) {
       ${infoVaga(v)}
       ${v.tipo_local === "nte" ? `<p class="vc-nota ntes-dica" style="margin:0">Marque esta vaga e indique abaixo as regiões onde você tem disponibilidade para atuar.</p>` : ""}
       ${v.tipo_local === "nte" ? `<div class="ntes oculto">${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}</div>` : ""}
-    </div>`).join("") : `<p class="sub">Você já se candidatou a todas as vagas abertas.</p>`;
+    </div>`).join("") : `<p class="sub">Você já se candidatou a todas as vagas disponíveis.</p>`;
   const atualizar = () => {
     let algumaNte = false;
     document.querySelectorAll("#fn-vagas .escolha").forEach(div => {
