@@ -257,6 +257,11 @@
     <h2>Minhas candidaturas</h2>
     <div id="ar-cands"></div>
     <div class="acoes" id="ar-acoes"></div>
+    <div id="ar-meus" class="oculto">
+      <h2>Meus dados</h2>
+      <p class="mini">Você pode atualizar suas informações a qualquer momento. A equipe de seleção é avisada das alterações.</p>
+      <div class="acoes"><button class="sec" id="ar-dados">Atualizar dados cadastrais</button><button class="sec" id="ar-editar">Atualizar formação e experiência profissional</button></div>
+    </div>
     <h2>Convites para outras oportunidades</h2>
     <label class="check"><input type="checkbox" id="ar-futuro"> Quero receber convites quando surgir uma vaga alinhada ao meu perfil.</label>
     <label class="check"><input type="checkbox" id="ar-outros"> Inclusive em outros projetos, além do projeto da Bahia.</label>
@@ -471,7 +476,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.7";
+const VERSAO = "2026-11-24.9";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -712,7 +717,7 @@ async function abrirArea() {
     html = area.dados_anteriores
       ? `<div class="aviso alerta" style="display:block"><b>Seus testes venceram${area.ultima_validade ? " em " + dataBR(area.ultima_validade) : ""}.</b> Para se inscrever em novas vagas, escolha a vaga e refaça os testes. Você poderá manter ou atualizar as suas informações.</div>`
       : `<div class="caixa destaque">Você ainda não tem uma inscrição ativa. Escolha uma vaga para começar.</div>`;
-    botoes.push(`<button id="ar-vagas">${area.dados_anteriores ? "Ver vagas e refazer os testes" : "Ver vagas e começar"}</button>`);
+    botoes.push(`<button id="ar-vagas">${area.dados_anteriores ? "Refazer os testes" : "Ver vagas e começar"}</button>`);
   } else if (r.status === "em_andamento") {
     const t = r.testes || {}, d = r.dados || {};
     const passos = [["Dados pessoais", !!d.lgpd_selecao], ["Teste 1 · Interpretação", !!t.interpretacao], ["Formação e Mini-bio", !!d.mini_curriculo],
@@ -725,10 +730,13 @@ async function abrirArea() {
       ? `<div class="aviso alerta" style="display:block"><b>Seus testes vencem em ${dataBR(r.valida_ate)}${dias > 0 ? ` (faltam ${dias} dia${dias > 1 ? "s" : ""})` : ""}.</b> Até lá, você pode se inscrever em outras vagas sem refazê-los. Depois, será preciso refazer os testes.</div>`
       : `<div class="caixa destaque"><b>Testes concluídos.</b> Eles valem até <b>${dataBR(r.valida_ate)}</b>. Até lá, você pode se inscrever em outras vagas, uma de cada vez, sem refazê-los.</div>`;
     if (vagas.some(v => !jaInscrito(v.id))) botoes.push(`<button id="ar-mais">Candidatar-me a outras vagas</button>`);
-    botoes.push(`<button class="sec" id="ar-dados">Editar meus dados</button>`, `<button class="sec" id="ar-editar">Atualizar formação e Mini-bio</button>`);
     if (await contaTestes()) botoes.push(`<button class="sec" id="ar-ciclo">Refazer todos os testes (conta de testes)</button>`);
   }
   $("ar-rodada").innerHTML = html;
+  const dd = (r && r.dados) || {};
+  const base = r ? dd : (area.dados_anteriores || {});
+  $("ar-meus").classList.toggle("oculto", !base.lgpd_selecao && !base.nome);
+  $("ar-editar").classList.toggle("oculto", !base.mini_curriculo);
   const cls = s => ({ aprovado: "ok", reprovado: "er", suspenso: "al", desistiu: "", expirada: "" }[s] ?? "al");
   $("ar-cands").innerHTML = (area.candidaturas || []).length ? area.candidaturas.map(c => `<div class="caixa"><div class="linha-cand"><div><b>${esc(c.titulo)}</b>
       <small>${c.ntes && c.ntes.length ? "Regiões: " + esc(c.ntes.map(regiao).join(", ")) + " · " : ""}enviada em ${dataBR(c.criado_em)}${c.modalidade === "reserva" && c.valida_ate && !["expirada","desistiu","reprovado"].includes(c.status) ? " · Banco de Talentos até " + dataBR(c.valida_ate) : ""}</small></div>
@@ -738,8 +746,8 @@ async function abrirArea() {
   if ($("ar-vagas")) $("ar-vagas").onclick = abrirVagas;
   if ($("ar-continuar")) $("ar-continuar").onclick = () => seguir(r);
   if ($("ar-mais")) $("ar-mais").onclick = () => { ls.del("vaga_escolhida"); abrirFinal(true); };
-  if ($("ar-editar")) $("ar-editar").onclick = () => abrirFormacao(true);
-  if ($("ar-dados")) $("ar-dados").onclick = () => abrirDados(true);
+  $("ar-editar").onclick = () => abrirFormacao(true);
+  $("ar-dados").onclick = () => abrirDados(true);
   if ($("ar-ciclo")) $("ar-ciclo").onclick = async () => {
     try { area = await comSessao("tal_teste_novo_ciclo"); await abrirArea(); aviso("a-area", "Pronto: escolha uma vaga para refazer todos os testes.", "ok"); }
     catch (e) { aviso("a-area", e.message); }
@@ -839,8 +847,8 @@ $("f-dados").addEventListener("submit", async ev => {
   const vaga = (edicaoDados ? vagaRod : ls.get("vaga_escolhida")) || vagaRod || ls.get("vaga_escolhida") || (vagas[0] && vagas[0].id);
   const btn = ev.submitter; btn.disabled = true;
   try {
+    if (edicaoDados) { area = await comSessao("tal_atualizar_dados", { p_dados: d }); await abrirArea(); return aviso("a-area", "Dados cadastrais atualizados.", "ok"); }
     area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: d });
-    if (edicaoDados) { await abrirArea(); return aviso("a-area", "Dados atualizados.", "ok"); }
     seguir(area.rodada);
   }
   catch (e) { aviso("a-dados", e.message); }
@@ -971,9 +979,10 @@ $("f-formacao").addEventListener("submit", async ev => {
   if (d.mini_curriculo.length < 50) return aviso("a-formacao", "Escreva a sua descrição individual com pelo menos algumas linhas.");
   const btn = ev.submitter; btn.disabled = true;
   try {
+    if (edicaoFormacao) { await comSessao("tal_atualizar_dados", { p_dados: d }); await abrirArea(); return aviso("a-area", "Formação e experiência profissional atualizadas.", "ok"); }
     await comSessao("tal_salvar", { p_dados: d });
     await carregarArea();
-    if (edicaoFormacao) { abrirArea(); aviso("a-area", "Formação e Mini-bio atualizadas.", "ok"); } else seguir(area.rodada);
+    seguir(area.rodada);
   } catch (e) { aviso("a-formacao", e.message); } finally { btn.disabled = false; }
 });
 
