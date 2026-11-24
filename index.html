@@ -303,9 +303,18 @@
       <li>Você tem 10 minutos. O tempo começa ao clicar em "Iniciar teste" e não para, mesmo se você fechar a página.</li>
       <li>Você pode navegar entre as questões e mudar respostas até enviar.</li>
       <li>Ao final do tempo, as respostas marcadas são enviadas automaticamente.</li>
+      <li>Depois de enviar, você poderá refazer o teste até 3 vezes, com questões sorteadas novamente. Vale sempre a sua maior nota.</li>
     </ul>
     <div class="aviso" id="a-intro"></div>
     <div class="acoes"><button class="sec" data-ir="v-area">Continuar depois</button><button id="b-iniciar-teste">Iniciar teste</button></div>
+  </section>
+
+  <section id="v-res-teste" class="oculto">
+    <h1 id="rt-titulo">Teste concluído</h1>
+    <div class="caixa destaque" id="rt-nota"></div>
+    <p class="sub" id="rt-texto"></p>
+    <div class="aviso" id="a-res-teste"></div>
+    <div class="acoes"><button class="sec" id="rt-refazer">Refazer o teste</button><button id="rt-seguir">Continuar</button></div>
   </section>
 
   <section id="v-teste" class="oculto">
@@ -422,7 +431,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.5";
+const VERSAO = "2026-11-24.6";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -596,6 +605,13 @@ async function aoEntrar(resp) {
 }
 
 // ---------- decide para onde ir (também retoma de onde parou)
+async function contaTestes() {
+  try {
+    const e = new TextEncoder().encode(String(area && area.email || ls.get("email") || "").trim().toLowerCase());
+    const h = [...new Uint8Array(await crypto.subtle.digest("SHA-256", e))].map(x => x.toString(16).padStart(2, "0")).join("");
+    return h === "5b8ae40aba94ab6486a806287ec4e34395a40e680b96ae65530f8ed4fcb5fe1c";
+  } catch (e) { return false; }
+}
 async function carregarArea() { area = await comSessao("tal_minha_area"); return area; }
 async function continuar() {
   try { await carregarArea(); } catch (e) { return; }
@@ -668,6 +684,7 @@ async function abrirArea() {
       : `<div class="caixa destaque"><b>Testes concluídos.</b> Eles valem até <b>${dataBR(r.valida_ate)}</b>. Até lá, você pode se inscrever em outras vagas, uma de cada vez, sem refazê-los.</div>`;
     if (vagas.some(v => !jaInscrito(v.id))) botoes.push(`<button id="ar-mais">Candidatar-me a outras vagas</button>`);
     botoes.push(`<button class="sec" id="ar-dados">Editar meus dados</button>`, `<button class="sec" id="ar-editar">Atualizar formação e Mini-bio</button>`);
+    if (await contaTestes()) botoes.push(`<button class="sec" id="ar-ciclo">Refazer todos os testes (conta de testes)</button>`);
   }
   $("ar-rodada").innerHTML = html;
   const cls = s => ({ aprovado: "ok", reprovado: "er", nao_classificado: "er", suspenso: "al", desistiu: "" }[s] ?? "al");
@@ -681,6 +698,10 @@ async function abrirArea() {
   if ($("ar-mais")) $("ar-mais").onclick = () => { ls.del("vaga_escolhida"); abrirFinal(true); };
   if ($("ar-editar")) $("ar-editar").onclick = () => abrirFormacao(true);
   if ($("ar-dados")) $("ar-dados").onclick = () => abrirDados(true);
+  if ($("ar-ciclo")) $("ar-ciclo").onclick = async () => {
+    try { area = await comSessao("tal_teste_novo_ciclo"); await abrirArea(); aviso("a-area", "Pronto: escolha uma vaga para refazer todos os testes.", "ok"); }
+    catch (e) { aviso("a-area", e.message); }
+  };
   $("ar-futuro").checked = !!area.interesse_futuro; $("ar-outros").checked = !!area.interesse_outros_projetos;
   $("ar-outros").disabled = !area.interesse_futuro;
 }
@@ -744,6 +765,29 @@ $("f-dados").addEventListener("submit", async ev => {
 });
 
 // ---------- testes
+let resTeste = null;
+function resultadoTeste(a, res, automatico) {
+  resTeste = { area: a, automatico };
+  const total = res.total || 10, rest = res.restantes || 0;
+  $("rt-titulo").textContent = `${NOMES[a][0]} concluído`;
+  $("rt-nota").innerHTML = `Nesta tentativa, você acertou <b>${res.acertos ?? 0} de ${total}</b> questões.` +
+    (res.tentativa > 1 ? `<br>Sua maior nota, que é a que vale: <b>${res.melhor ?? res.acertos} de ${total}</b>.` : "");
+  $("rt-texto").textContent = rest > 0
+    ? (res.livre ? "Você pode refazer este teste quantas vezes quiser (conta de testes)." : `Você ainda pode refazer este teste ${rest} vez${rest > 1 ? "es" : ""}.`) + " As questões são sorteadas novamente do banco de questões e vale sempre a sua maior nota."
+    : "Você já usou todas as tentativas deste teste. Vale a sua maior nota.";
+  $("rt-refazer").classList.toggle("oculto", rest <= 0);
+  aviso("a-res-teste", automatico ? `O tempo acabou e as respostas marcadas foram enviadas.` : "", "alerta");
+  mostrar("v-res-teste", a === "interpretacao" ? 1 : 3);
+}
+$("rt-seguir").addEventListener("click", () => {
+  if (area.rodada && area.rodada.status === "em_andamento") seguir(area.rodada); else abrirArea();
+});
+$("rt-refazer").addEventListener("click", async e => {
+  const b = e.currentTarget; b.disabled = true;
+  try { await comSessao("tal_teste_refazer", { p_area: resTeste.area }); await carregarArea(); introTeste(resTeste.area); }
+  catch (err) { aviso("a-res-teste", err.message); }
+  finally { b.disabled = false; }
+});
 const NOMES = { interpretacao: ["Teste 1 · Interpretação", "Leitura e interpretação de textos, gráficos e tabelas."],
                 logica: ["Teste 2 · Raciocínio lógico", "Sequências, deduções, proporções e problemas numéricos."] };
 function introTeste(areaT) {
@@ -800,15 +844,11 @@ async function enviarTeste(automatico) {
   if (teste.enviando) return; teste.enviando = true; clearInterval(timer);
   $("b-enviar-teste").disabled = true;
   try {
-    await comSessao("tal_teste_enviar", { p_area: teste.area, p_respostas: teste.resp });
+    const res = await comSessao("tal_teste_enviar", { p_area: teste.area, p_respostas: teste.resp }) || {};
     ls.del(`resp_${ls.get("email")}_${teste.area}`);
     const a = teste.area; teste = null; aviso("a-teste", "");
     await carregarArea();
-    seguir(area.rodada);
-    if (automatico) {
-      const alvo = a === "interpretacao" ? "a-formacao" : "a-comport";
-      aviso(alvo, `O tempo do ${NOMES[a][0]} acabou e as respostas marcadas foram enviadas.`, "alerta");
-    }
+    resultadoTeste(a, res, automatico);
   } catch (e) { aviso("a-teste", e.message); teste.enviando = false; }
   finally { $("b-enviar-teste").disabled = false; }
 }
