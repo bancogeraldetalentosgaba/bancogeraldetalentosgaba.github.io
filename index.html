@@ -50,6 +50,7 @@
   .vaga{border:1px solid var(--borda);border-radius:var(--raio);padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;background:#fff;text-align:left;color:var(--texto);font-weight:400;font-size:14px}
   .vaga:hover{background:var(--cor-suave)}
   .vaga b{font-size:15.5px}.vaga small{color:var(--texto-2)}
+  .vaga .cta{margin-top:auto;padding-top:6px;font-weight:700;font-size:14px;color:var(--cor-forte)}
   .etiqueta{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--cor-suave);color:var(--cor-forte)}
   ul.lista{margin:6px 0 0;padding-left:20px;line-height:1.55;font-size:14.5px}
   .etapas{display:flex;gap:5px;margin-bottom:18px}.etapas i{flex:1;height:4px;border-radius:4px;background:var(--cor-suave)}.etapas i.on{background:var(--magenta)}
@@ -426,14 +427,16 @@ async function abrirVagas() {
         ${v.vinculo ? `<span class="etiqueta">${esc(v.vinculo)}</span>` : ""}
         <b>${esc(v.titulo)}</b><span>${esc(v.resumo)}</span>
         <small>${esc(v.tipo_local === "salvador" ? "Salvador · equipe base" : "Qualquer região da Bahia")} · ${esc(v.jornada)}</small>
+        <span class="cta">${ctaVaga(v)} →</span>
       </button>`).join("") : `<p class="sub">No momento não há vagas abertas. Volte em breve!</p>`;
     document.querySelectorAll(".vaga").forEach(b => b.addEventListener("click", () => abrirVaga(b.dataset.id)));
   } catch (e) { $("lista-vagas").innerHTML = ""; aviso("a-vagas", e.message); }
 }
+function ctaVaga(v) { return v && v.modalidade === "previsto" ? "Inscreva-se no processo seletivo" : "Inscreva-se no Banco de Talentos"; }
 function abrirVaga(id) {
   vagaAtual = vagas.find(v => v.id === id); if (!vagaAtual) return;
   $("d-titulo").textContent = vagaAtual.titulo;
-  $("d-qtd").textContent = vagaAtual.vinculo || ""; $("d-qtd").classList.toggle("oculto", !vagaAtual.vinculo);
+  $("b-quero").textContent = ctaVaga(vagaAtual); $("d-qtd").textContent = vagaAtual.vinculo || ""; $("d-qtd").classList.toggle("oculto", !vagaAtual.vinculo);
   $("d-resumo").textContent = vagaAtual.resumo || "";
   $("d-local").textContent = "📍 " + vagaAtual.local;
   $("d-info").textContent = [vagaAtual.jornada, vagaAtual.contrato].filter(Boolean).join(" · ");
