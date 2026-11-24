@@ -101,12 +101,18 @@
   .hero button{background:#fff;color:var(--cor-forte);min-width:200px}
   .hero button:hover{background:var(--cor-suave)}
   @media(max-width:560px){.hero{padding:24px 18px}.hero h1{font-size:22px}.hero button{width:100%}}
-  .passos3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:6px 0 8px}
-  @media(max-width:620px){.passos3{grid-template-columns:1fr}}
-  .passo{border:1px solid var(--borda);border-radius:var(--raio);padding:16px;background:#fff}
-  .passo .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;margin-bottom:10px}
-  .passo:nth-child(1) .n{background:var(--magenta)}.passo:nth-child(2) .n{background:var(--laranja)}.passo:nth-child(3) .n{background:var(--verde)}
-  .passo b{display:block;font-size:15px;margin-bottom:4px}.passo span{font-size:13.5px;color:var(--texto-2);line-height:1.5}
+  .trilha{list-style:none;margin:8px 0 0;padding:0;position:relative}
+  .trilha li:not(:last-child)::before{content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--borda)}
+  .trilha li{position:relative;display:flex;gap:14px;padding:0 0 16px}
+  .trilha li:last-child{padding-bottom:0}
+  .trilha .n{flex:none;position:relative;z-index:1;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;background:var(--magenta)}
+  .trilha li:nth-child(2) .n{background:var(--laranja)}.trilha li:nth-child(3) .n{background:var(--verde)}
+  .trilha li:nth-child(4) .n{background:var(--cor-forte)}.trilha li:nth-child(5) .n{background:#5b4a55}
+  .trilha b{display:block;font-size:15px;margin:5px 0 2px}.trilha span{font-size:13.5px;color:var(--texto-2);line-height:1.5}
+  .avisos{margin:18px 0 4px;border:1px solid var(--borda);border-radius:var(--raio);background:var(--cor-suave);padding:14px 16px}
+  .avisos b{display:block;font-size:14.5px;margin-bottom:6px;color:var(--cor-forte)}
+  .avisos ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:var(--texto)}
+  .avisos li+li{margin-top:4px}
   .sobre{border-left:4px solid var(--magenta);padding:4px 0 4px 14px;margin:22px 0 4px;font-size:14.5px;line-height:1.6;color:var(--texto)}
   .modal{position:fixed;inset:0;z-index:50;background:rgba(17,24,39,.55);display:flex;align-items:center;justify-content:center;padding:16px}
   .modal-box{position:relative;overflow:hidden;width:100%;max-width:440px;background:#fff;border-radius:16px;padding:30px 24px 22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
@@ -135,10 +141,20 @@
       <button id="b-ver-vagas">Ver as vagas</button>
     </div>
     <h2>Como funciona a seleção</h2>
-    <div class="passos3">
-      <div class="passo"><div class="n">1</div><b>Conheça as vagas</b><span>Veja as atribuições, os pré-requisitos e o local de atuação de cada vaga.</span></div>
-      <div class="passo"><div class="n">2</div><b>Inscreva-se online</b><span>Preencha seus dados e faça dois testes curtos e cronometrados, de 10 minutos cada.</span></div>
-      <div class="passo"><div class="n">3</div><b>Acompanhe o processo</b><span>Seu progresso fica salvo e você acompanha cada etapa pela sua área.</span></div>
+    <ol class="trilha">
+      <li><div class="n">1</div><div><b>Inscrição</b><span>No processo seletivo em andamento ou no Banco de Talentos, para seleções futuras.</span></div></li>
+      <li><div class="n">2</div><div><b>Análise e triagem de perfil</b><span>Avaliamos seus dados, sua formação, sua experiência e os resultados dos testes.</span></div></li>
+      <li><div class="n">3</div><div><b>Entrevista</b><span>Coletiva e/ou individual, com a equipe do projeto.</span></div></li>
+      <li><div class="n">4</div><div><b>Avaliação de habilidades aplicadas</b><span>Uma atividade prática ligada ao dia a dia da função.</span></div></li>
+      <li><div class="n">5</div><div><b>Devolutiva final</b><span>Você recebe o resultado da seleção por e-mail.</span></div></li>
+    </ol>
+    <div class="avisos">
+      <b>Fique atento(a)</b>
+      <ul>
+        <li>Entre uma etapa e outra pode haver desclassificação. Você será avisado(a) por e-mail.</li>
+        <li>Mantenha seus testes sempre atualizados: eles valem por 3 meses e são a base da análise do seu perfil.</li>
+        <li>O cadastro no Banco de Talentos é considerado por até 6 meses. Ao fim do prazo, enviamos um e-mail para você renovar a inscrição.</li>
+      </ul>
     </div>
     <p class="sobre">O <b>Projeto GA BA</b> atua na gestão da aprendizagem, apoiando escolas e equipes educacionais com acompanhamento pedagógico, formação e uso de dados para que cada estudante aprenda mais.</p>
   </section>
@@ -536,7 +552,7 @@ async function abrirArea() {
   $("ar-rodada").innerHTML = html;
   const cls = s => ({ aprovado: "ok", reprovado: "er", nao_classificado: "er", suspenso: "al", desistiu: "" }[s] ?? "al");
   $("ar-cands").innerHTML = (area.candidaturas || []).length ? area.candidaturas.map(c => `<div class="caixa"><div class="linha-cand"><div><b>${esc(c.titulo)}</b>
-      <small>${c.ntes && c.ntes.length ? "Regiões: " + esc(c.ntes.join(", ")) + " · " : ""}enviada em ${dataBR(c.criado_em)}</small></div>
+      <small>${c.ntes && c.ntes.length ? "Regiões: " + esc(c.ntes.join(", ")) + " · " : ""}enviada em ${dataBR(c.criado_em)}${c.modalidade === "reserva" && c.valida_ate && !["expirada","desistiu","reprovado"].includes(c.status) ? " · Banco de Talentos até " + dataBR(c.valida_ate) : ""}</small></div>
       <span class="st ${cls(c.status)}">${esc(c.situacao)}</span></div></div>`).join("")
     : `<p class="mini">Nenhuma candidatura enviada ainda.</p>`;
   $("ar-acoes").innerHTML = botoes.join("");
