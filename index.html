@@ -26,7 +26,7 @@
   h1{font-size:21px;margin:0 0 6px}h2{font-size:16px;margin:24px 0 8px}
   p.sub{margin:0 0 18px;color:var(--texto-2);font-size:14.5px;line-height:1.5}
   label{display:block;font-size:14px;font-weight:600;margin:14px 0 6px}
-  input[type=text],input[type=email],input[type=date],input[type=number],input[type=tel],select,textarea{width:100%;padding:11px 13px;font-size:16px;border:1px solid var(--borda);border-radius:var(--raio);background:#fff;color:var(--texto);font-family:inherit}
+  input[type=text],input[type=email],input[type=date],input[type=month],input[type=number],input[type=tel],select,textarea{width:100%;padding:11px 13px;font-size:16px;border:1px solid var(--borda);border-radius:var(--raio);background:#fff;color:var(--texto);font-family:inherit}
   textarea{min-height:90px;resize:vertical}
   input:focus,select:focus,textarea:focus{outline:2px solid var(--cor);outline-offset:1px;border-color:var(--cor)}
   .ajuda{font-size:12.5px;color:var(--texto-2);margin-top:5px;line-height:1.4}
@@ -37,6 +37,8 @@
   .opcoes{display:flex;gap:8px;flex-wrap:wrap}
   .opcoes label{margin:0;font-weight:500;border:1px solid var(--borda);border-radius:999px;padding:8px 14px;cursor:pointer;display:flex;gap:8px;align-items:center}
   .opcoes input{accent-color:var(--cor)}
+  .subdet{border-left:3px solid var(--cor-suave);padding:2px 0 6px 14px;margin:8px 0 4px}
+  .perigo{color:var(--erro)!important;border-color:#f3c8c3!important}
   button{padding:13px 18px;font-size:16px;font-weight:600;border:0;border-radius:var(--raio);background:var(--cor);color:#fff;cursor:pointer;font-family:inherit}
   button:hover{background:var(--cor-forte)}button:disabled{opacity:.55;cursor:default}
   button.sec{background:#fff;color:var(--cor);border:1px solid var(--borda)}button.sec:hover{background:var(--cor-suave)}
@@ -259,6 +261,22 @@
     <label class="check"><input type="checkbox" id="ar-futuro"> Quero receber convites quando surgir uma vaga alinhada ao meu perfil.</label>
     <label class="check"><input type="checkbox" id="ar-outros"> Inclusive em outros projetos, além do projeto da Bahia.</label>
     <div class="aviso" id="a-area"></div>
+    <h2>Excluir minha inscrição</h2>
+    <p class="mini">Se não quiser mais participar, você pode excluir a sua inscrição e os dados informados nos formulários.</p>
+    <div class="acoes"><button class="sec perigo" id="ar-excluir">Excluir minha inscrição</button></div>
+  </section>
+
+  <section id="v-excluir" class="oculto">
+    <h1>Excluir minha inscrição</h1>
+    <div class="caixa destaque">Ao confirmar, a sua inscrição no Banco de Talentos é excluída: você deixa de participar dos processos seletivos do projeto, as suas candidaturas são encerradas e os dados informados nos formulários são apagados. Esta ação não pode ser desfeita. Você receberá um e-mail confirmando a exclusão.</div>
+    <label class="check"><input type="checkbox" id="ex-ok"> Entendo e quero excluir a minha inscrição.</label>
+    <div class="aviso" id="a-excluir"></div>
+    <div class="acoes"><button class="sec" id="ex-voltar">Voltar</button><button id="ex-confirmar" style="background:var(--erro)">Confirmar exclusão</button></div>
+  </section>
+
+  <section id="v-excluida" class="oculto">
+    <h1>Inscrição excluída</h1>
+    <p class="sub">A sua inscrição foi excluída. Enviamos um e-mail confirmando a exclusão. Agradecemos o seu interesse no projeto.</p>
   </section>
 
   <!-- LGPD + DADOS PESSOAIS -->
@@ -267,26 +285,48 @@
     <p class="sub">Os retornos da seleção serão enviados para <b id="p-email"></b>.</p>
     <form id="f-dados" novalidate>
       <label for="p-nome">Nome completo</label><input id="p-nome" type="text" autocomplete="name">
+      <label for="p-social">Nome social (opcional)</label><input id="p-social" type="text" placeholder="Se preferir, informe o nome pelo qual deseja ser chamado(a)">
       <div class="grade2">
-        <div><label for="p-cpf">CPF</label><input id="p-cpf" type="text" inputmode="numeric" maxlength="11" placeholder="Somente números"></div>
         <div><label for="p-nasc">Data de nascimento</label><input id="p-nasc" type="date"></div>
+        <div></div>
         <div><label for="p-whats">WhatsApp</label><input id="p-whats" type="tel" autocomplete="tel" placeholder="(71) 9 0000-0000"></div>
         <div><label for="p-tel">Outro telefone (opcional)</label><input id="p-tel" type="tel" placeholder="(71) 0000-0000"></div>
         <div><label for="p-mun">Município onde reside</label><input id="p-mun" type="text"></div>
         <div><label for="p-uf">UF</label><select id="p-uf"></select></div>
       </div>
       <label for="p-linkedin">LinkedIn (opcional)</label><input id="p-linkedin" type="text" placeholder="https://www.linkedin.com/in/...">
-      <label for="p-pcd">Você é pessoa com deficiência e precisa de algum recurso para participar?</label>
-      <input id="p-pcd" type="text" placeholder="Opcional. Ex.: leitor de tela, tempo adicional">
+      <label>Você é pessoa com deficiência?</label>
+      <div class="opcoes"><label><input type="radio" name="pcd" value="nao"> Não</label><label><input type="radio" name="pcd" value="sim"> Sim</label></div>
+      <div class="subdet oculto" id="pcd-det"><label for="p-pcd">Qual? (opcional)</label><input id="p-pcd" type="text" placeholder="Se quiser, descreva a deficiência e se precisa de algum recurso"></div>
       <h2>Declarações</h2>
-      <label>Possui vínculo de trabalho ativo com o órgão público parceiro do projeto?</label>
-      <div class="opcoes"><label><input type="radio" name="vinculo_orgao" value="nao"> Não</label><label><input type="radio" name="vinculo_orgao" value="sim"> Sim</label></div>
-      <label>Possui vínculo de trabalho ativo com a instituição executora do projeto?</label>
-      <div class="opcoes"><label><input type="radio" name="vinculo_executora" value="nao"> Não</label><label><input type="radio" name="vinculo_executora" value="sim"> Sim</label></div>
-      <label>Tem parente até o 3º grau trabalhando no projeto?</label>
-      <div class="opcoes"><label><input type="radio" name="parente_projeto" value="nao"> Não</label><label><input type="radio" name="parente_projeto" value="sim"> Sim</label></div>
+      <label>Possui ou já possuiu vínculo com o Governo do Estado da Bahia?</label>
+      <div class="opcoes"><label><input type="radio" name="vgov" value="nao"> Não</label><label><input type="radio" name="vgov" value="sim"> Sim</label></div>
+      <div class="subdet oculto" id="vgov-det">
+        <label>O vínculo permanece ativo?</label>
+        <div class="opcoes"><label><input type="radio" name="vgov_ativo" value="sim"> Sim</label><label><input type="radio" name="vgov_ativo" value="nao"> Não, já foi encerrado</label></div>
+        <div class="grade2">
+          <div><label for="vgov-ini">Início (mês e ano)</label><input id="vgov-ini" type="month" placeholder="AAAA-MM"></div>
+          <div class="vgov-fimbox"><label for="vgov-fim">Fim (mês e ano)</label><input id="vgov-fim" type="month" placeholder="AAAA-MM"></div>
+          <div><label for="vgov-tipo">Tipo de vínculo</label><select id="vgov-tipo"><option value="">Selecione</option><option>Concursado</option><option>Comissionado</option><option>Terceirizado</option><option>Prestador de serviço</option></select></div>
+          <div><label for="vgov-org">Órgão em que atua ou atuou</label><input id="vgov-org" type="text"></div>
+        </div>
+        <label for="vgov-func">Função</label><input id="vgov-func" type="text">
+      </div>
+      <label>Possui ou já possuiu vínculo com a Fundação Getulio Vargas?</label>
+      <div class="opcoes"><label><input type="radio" name="vfgv" value="nao"> Não</label><label><input type="radio" name="vfgv" value="sim"> Sim</label></div>
+      <div class="subdet oculto" id="vfgv-det">
+        <label>O vínculo permanece ativo?</label>
+        <div class="opcoes"><label><input type="radio" name="vfgv_ativo" value="sim"> Sim</label><label><input type="radio" name="vfgv_ativo" value="nao"> Não, já foi encerrado</label></div>
+        <div class="grade2">
+          <div><label for="vfgv-ini">Início (mês e ano)</label><input id="vfgv-ini" type="month" placeholder="AAAA-MM"></div>
+          <div class="vfgv-fimbox"><label for="vfgv-fim">Fim (mês e ano)</label><input id="vfgv-fim" type="month" placeholder="AAAA-MM"></div>
+          <div><label for="vfgv-tipo">Tipo de vínculo</label><select id="vfgv-tipo"><option value="">Selecione</option><option>Bolsista</option><option>Prestação de serviços</option><option>CLT</option><option>Estágio</option></select></div>
+          <div><label for="vfgv-org">Onde atua ou atuou</label><input id="vfgv-org" type="text"></div>
+        </div>
+        <label for="vfgv-func">Função</label><input id="vfgv-func" type="text">
+      </div>
       <h2>Proteção de dados (LGPD)</h2>
-      <p class="sub" style="margin-bottom:6px">Os dados informados serão usados apenas nos processos seletivos e no banco de talentos do projeto, por até 12 meses. Eles ficam restritos à equipe de seleção e não são compartilhados com terceiros. Você pode pedir a correção ou a exclusão dos seus dados a qualquer momento pelos canais do projeto.</p>
+      <p class="sub" style="margin-bottom:6px">Os dados informados serão usados apenas nos processos seletivos e no banco de talentos do projeto, por até 12 meses. Eles ficam restritos à equipe de seleção e não são compartilhados com terceiros. Você pode corrigir seus dados ou excluir sua inscrição a qualquer momento em Minha área.</p>
       <label class="check"><input type="checkbox" id="lgpd1"> Li e concordo com o uso dos meus dados pessoais para os processos seletivos, nos termos da Lei nº 13.709/2018 (LGPD).</label>
       <label class="check"><input type="checkbox" id="lgpd2"> Autorizo manter meus dados no banco de talentos para outras vagas pelo prazo de 12 meses.</label>
       <div class="aviso" id="a-dados"></div>
@@ -431,7 +471,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.6";
+const VERSAO = "2026-11-24.7";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -652,9 +692,11 @@ $("rn-atualizar").addEventListener("click", () => abrirDados());
 $("rn-manter").addEventListener("click", async e => {
   const vaga = ls.get("vaga_escolhida") || (vagas[0] && vagas[0].id);
   if (!vaga) return abrirVagas();
-  if (!area.tem_cpf_anterior) return abrirDados();
+  const ant = { ...(area.dados_anteriores || {}) };
+  if (!ant.pcd || !ant.vinculo_governo || !ant.vinculo_fgv) { abrirDados(); return aviso("a-dados", "Atualizamos o formulário: confira seus dados e responda às novas perguntas.", "alerta"); }
+  ["cpf", "parente_projeto", "vinculo_orgao", "vinculo_executora", "acessibilidade"].forEach(k => delete ant[k]);
   e.target.disabled = true;
-  try { area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: { ...(area.dados_anteriores || {}) } }); seguir(area.rodada); }
+  try { area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: ant }); seguir(area.rodada); }
   catch (err) { aviso("a-renovar", err.message); } finally { e.target.disabled = false; }
 });
 
@@ -687,7 +729,7 @@ async function abrirArea() {
     if (await contaTestes()) botoes.push(`<button class="sec" id="ar-ciclo">Refazer todos os testes (conta de testes)</button>`);
   }
   $("ar-rodada").innerHTML = html;
-  const cls = s => ({ aprovado: "ok", reprovado: "er", nao_classificado: "er", suspenso: "al", desistiu: "" }[s] ?? "al");
+  const cls = s => ({ aprovado: "ok", reprovado: "er", suspenso: "al", desistiu: "", expirada: "" }[s] ?? "al");
   $("ar-cands").innerHTML = (area.candidaturas || []).length ? area.candidaturas.map(c => `<div class="caixa"><div class="linha-cand"><div><b>${esc(c.titulo)}</b>
       <small>${c.ntes && c.ntes.length ? "Regiões: " + esc(c.ntes.map(regiao).join(", ")) + " · " : ""}enviada em ${dataBR(c.criado_em)}${c.modalidade === "reserva" && c.valida_ate && !["expirada","desistiu","reprovado"].includes(c.status) ? " · Banco de Talentos até " + dataBR(c.valida_ate) : ""}</small></div>
       <span class="st ${cls(c.status)}">${esc(c.situacao)}</span></div></div>`).join("")
@@ -705,6 +747,17 @@ async function abrirArea() {
   $("ar-futuro").checked = !!area.interesse_futuro; $("ar-outros").checked = !!area.interesse_outros_projetos;
   $("ar-outros").disabled = !area.interesse_futuro;
 }
+$("ar-excluir").addEventListener("click", () => { $("ex-ok").checked = false; aviso("a-excluir", ""); mostrar("v-excluir"); });
+$("ex-voltar").addEventListener("click", () => abrirArea());
+$("ex-confirmar").addEventListener("click", async e => {
+  if (!$("ex-ok").checked) return aviso("a-excluir", "Marque a confirmação para excluir a sua inscrição.");
+  const b = e.currentTarget; b.disabled = true;
+  try {
+    await comSessao("tal_excluir_inscricao", { p_confirmacao: "EXCLUIR" });
+    ["sessao", "email", "vaga_escolhida"].forEach(ls.del); area = null; desenharTopo(); mostrar("v-excluida");
+  } catch (err) { aviso("a-excluir", err.message); }
+  finally { b.disabled = false; }
+});
 ["ar-futuro", "ar-outros"].forEach(id => $(id).addEventListener("change", async () => {
   if (!$("ar-futuro").checked) $("ar-outros").checked = false;
   $("ar-outros").disabled = !$("ar-futuro").checked;
@@ -715,7 +768,36 @@ async function abrirArea() {
 // ---------- dados pessoais (+ LGPD)
 const UFS = "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
 $("p-uf").innerHTML = UFS.map(u => `<option ${u === "BA" ? "selected" : ""}>${u}</option>`).join("");
-$("p-cpf").addEventListener("input", e => e.target.value = e.target.value.replace(/\D/g, "").slice(0, 11));
+function vincDet() {
+  $("pcd-det").classList.toggle("oculto", radio("pcd") !== "sim");
+  ["vgov", "vfgv"].forEach(p => {
+    $(p + "-det").classList.toggle("oculto", radio(p) !== "sim");
+    document.querySelector("." + p + "-fimbox").classList.toggle("oculto", radio(p + "_ativo") !== "nao");
+  });
+}
+document.querySelectorAll('#f-dados input[type=radio]').forEach(i => i.addEventListener("change", vincDet));
+function lerVinc(p) {
+  if (radio(p) !== "sim") return radio(p) ? { possui: radio(p) } : null;
+  return { possui: "sim", ativo: radio(p + "_ativo"), inicio: $(p + "-ini").value, fim: radio(p + "_ativo") === "nao" ? $(p + "-fim").value : "",
+           tipo: $(p + "-tipo").value, local: $(p + "-org").value.trim(), funcao: $(p + "-func").value.trim() };
+}
+function preencherVinc(p, v) {
+  v = v || {}; marcar(p, v.possui); marcar(p + "_ativo", v.ativo);
+  $(p + "-ini").value = v.inicio || ""; $(p + "-fim").value = v.fim || ""; $(p + "-tipo").value = v.tipo || "";
+  $(p + "-org").value = v.local || ""; $(p + "-func").value = v.funcao || "";
+}
+function vincInvalido(v, nome) {
+  if (!v) return `Responda se possui ou já possuiu vínculo com ${nome}.`;
+  if (v.possui !== "sim") return "";
+  if (!v.ativo) return `Informe se o vínculo com ${nome} permanece ativo.`;
+  if (!v.inicio) return `Informe o mês e o ano de início do vínculo com ${nome}.`;
+  if (v.ativo === "nao" && !v.fim) return `Informe o mês e o ano de encerramento do vínculo com ${nome}.`;
+  if (v.fim && v.fim < v.inicio) return `O fim do vínculo com ${nome} não pode ser anterior ao início.`;
+  if (!v.tipo) return `Informe o tipo de vínculo com ${nome}.`;
+  if (!v.local) return `Informe onde atua ou atuou (${nome}).`;
+  if (!v.funcao) return `Informe a função exercida (${nome}).`;
+  return "";
+}
 function cpfValido(c) {
   if (!/^\d{11}$/.test(c) || /^(\d)\1+$/.test(c)) return false;
   for (let t = 9; t < 11; t++) { let s = 0; for (let i = 0; i < t; i++) s += +c[i] * (t + 1 - i); if (((s * 10) % 11) % 10 !== +c[t]) return false; }
@@ -728,32 +810,33 @@ function abrirDados(edicao) {
   $("p-email").textContent = area.email;
   $("p-nome").value = d.nome || area.nome || ""; $("p-nasc").value = d.data_nascimento || "";
   $("p-whats").value = d.whatsapp || d.telefone || ""; $("p-tel").value = d.telefone_2 || "";
-  $("p-mun").value = d.municipio || ""; $("p-uf").value = d.uf || "BA"; $("p-linkedin").value = d.linkedin || ""; $("p-pcd").value = d.acessibilidade || "";
-  marcar("vinculo_orgao", d.vinculo_orgao); marcar("vinculo_executora", d.vinculo_executora); marcar("parente_projeto", d.parente_projeto);
-  const temCpf = (area.rodada && area.rodada.tem_cpf) || (!area.rodada && area.tem_cpf_anterior);
-  $("p-cpf").value = ""; $("p-cpf").placeholder = temCpf ? "Já informado (preencha só para corrigir)" : "Somente números";
+  $("p-mun").value = d.municipio || ""; $("p-uf").value = d.uf || "BA"; $("p-linkedin").value = d.linkedin || "";
+  $("p-social").value = d.nome_social || ""; $("p-pcd").value = d.pcd_qual || d.acessibilidade || "";
+  document.querySelectorAll('#f-dados input[type=radio]').forEach(i => i.checked = false);
+  marcar("pcd", d.pcd || (d.acessibilidade ? "sim" : null));
+  preencherVinc("vgov", d.vinculo_governo); preencherVinc("vfgv", d.vinculo_fgv); vincDet();
   $("lgpd1").checked = !!d.lgpd_selecao; $("lgpd2").checked = !!d.lgpd_banco_talentos;
   $("b-dados").textContent = edicaoDados ? "Salvar alterações" : "Salvar e continuar";
   aviso("a-dados", ""); mostrar("v-dados", edicaoDados ? null : 0);
 }
 $("f-dados").addEventListener("submit", async ev => {
   ev.preventDefault(); aviso("a-dados", "");
-  const d = { nome: $("p-nome").value.trim(), cpf: $("p-cpf").value, data_nascimento: $("p-nasc").value,
+  const d = { nome: $("p-nome").value.trim(), nome_social: $("p-social").value.trim(), data_nascimento: $("p-nasc").value,
     whatsapp: $("p-whats").value.trim(), telefone: $("p-whats").value.trim(), telefone_2: $("p-tel").value.trim(),
-    municipio: $("p-mun").value.trim(), uf: $("p-uf").value, linkedin: $("p-linkedin").value.trim(), acessibilidade: $("p-pcd").value.trim(),
-    vinculo_orgao: radio("vinculo_orgao"), vinculo_executora: radio("vinculo_executora"), parente_projeto: radio("parente_projeto"),
+    municipio: $("p-mun").value.trim(), uf: $("p-uf").value, linkedin: $("p-linkedin").value.trim(),
+    pcd: radio("pcd"), pcd_qual: radio("pcd") === "sim" ? $("p-pcd").value.trim() : "",
+    vinculo_governo: lerVinc("vgov"), vinculo_fgv: lerVinc("vfgv"),
     lgpd_selecao: $("lgpd1").checked, lgpd_banco_talentos: $("lgpd2").checked };
-  const temCpf = (area.rodada && area.rodada.tem_cpf) || (!area.rodada && area.tem_cpf_anterior);
   if (d.nome.split(/\s+/).length < 2) return aviso("a-dados", "Informe seu nome completo.");
-  if ((!temCpf || d.cpf) && !cpfValido(d.cpf)) return aviso("a-dados", "CPF inválido. Confira os números.");
   if (!d.data_nascimento) return aviso("a-dados", "Informe sua data de nascimento.");
   if (d.whatsapp.replace(/\D/g, "").length < 10) return aviso("a-dados", "Informe o WhatsApp com DDD.");
   if (!d.municipio) return aviso("a-dados", "Informe o município onde reside.");
-  if (!d.vinculo_orgao || !d.vinculo_executora || !d.parente_projeto) return aviso("a-dados", "Responda às três declarações.");
+  if (!d.pcd) return aviso("a-dados", "Informe se você é pessoa com deficiência.");
+  const ev1 = vincInvalido(d.vinculo_governo, "o Governo do Estado da Bahia") || vincInvalido(d.vinculo_fgv, "a Fundação Getulio Vargas");
+  if (ev1) return aviso("a-dados", ev1);
   if (!d.lgpd_selecao) return aviso("a-dados", "Para continuar, é preciso aceitar o uso dos dados para os processos seletivos.");
   const vagaRod = area.rodada && vagas.some(v => v.id === area.rodada.vaga_id) ? area.rodada.vaga_id : null;
   const vaga = (edicaoDados ? vagaRod : ls.get("vaga_escolhida")) || vagaRod || ls.get("vaga_escolhida") || (vagas[0] && vagas[0].id);
-  if (!d.cpf) delete d.cpf;
   const btn = ev.submitter; btn.disabled = true;
   try {
     area = await comSessao("tal_iniciar", { p_vaga: vaga, p_dados: d });
