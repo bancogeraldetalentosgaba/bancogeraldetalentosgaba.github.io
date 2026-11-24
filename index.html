@@ -90,7 +90,7 @@
   .escolha.vcard[class*="tema"] .topo-esc input{accent-color:#fff}
   .escolha.vcard[class*="tema"].on{box-shadow:0 0 0 3px #fff inset,0 8px 22px rgba(60,10,40,.25)}
   .escolha.vcard[class*="tema"] .ntes label{color:var(--texto)}
-  .escolha.vcard[class*="tema"] .ntes .ver-mapa{color:#fff}
+  .escolha.vcard[class*="tema"] .ntes .ver-mapa{border-color:#fff}
   #fn-vagas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;align-items:start;margin:10px 0}
   #fn-vagas .escolha{margin:0}
   .etiqueta{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--cor-suave);color:var(--cor-forte)}
@@ -131,7 +131,10 @@
   .ntes label.on{background:var(--cor-suave);border-color:var(--cor);color:var(--cor-forte)}
   .ntes input{accent-color:var(--cor)}
   .ntes label.todas-lbl{font-weight:700;border-style:dashed}
-  .ntes .ver-mapa{flex-basis:100%;margin-top:6px;font-size:14px;font-weight:600;color:var(--cor-forte);text-decoration:underline;text-underline-offset:3px}
+  .ntes .quebra{flex-basis:100%;height:0}
+  .ntes .ver-mapa{display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:10px 16px;border-radius:999px;background:#fff;color:var(--cor-forte);border:2px solid var(--cor);font-size:14px;font-weight:700;white-space:nowrap;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s,box-shadow .15s}
+  .ntes .ver-mapa:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .ntes .ver-mapa svg{width:18px;height:18px;flex:none}
   .mini{font-size:12.5px;color:var(--texto-2)}
   .local{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:600;color:var(--cor-forte)}
   .hero{position:relative;border-radius:14px;padding:30px 26px 28px;margin:4px 0 22px;color:#fff;overflow:hidden;
@@ -419,7 +422,7 @@
 </div>
 
 <script>
-const VERSAO = "2026-11-24.4";
+const VERSAO = "2026-11-24.5";
 // a hospedagem guarda a página por até 10 min; se houver versão mais nova, recarrega uma vez
 (async () => { try {
   const t = await (await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" })).text();
@@ -889,7 +892,7 @@ async function abrirFinal(somenteCandidatar) {
       <label class="topo-esc"><input type="checkbox" class="fv${unica ? " oculto" : ""}" value="${esc(v.id)}" ${unica || v.id === escolhida ? "checked" : ""}><span style="display:flex;flex-direction:column;gap:6px">${seloVinculo(v)}<h3>${esc(v.titulo)}</h3></span></label>
       ${infoVaga(v)}
       ${v.tipo_local === "nte" ? `<p class="vc-nota ntes-dica" style="margin:0">Marque esta vaga e indique abaixo as regiões onde você tem disponibilidade para atuar.</p>` : ""}
-      ${v.tipo_local === "nte" ? `<div class="ntes oculto"><label class="todas-lbl"><input type="checkbox" class="todas"> Marcar todas</label>${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}<a class="ver-mapa" href="mapa.html" target="_blank" rel="noopener">🗺️ Ver o mapa das regiões</a></div>` : ""}
+      ${v.tipo_local === "nte" ? `<div class="ntes oculto"><label class="todas-lbl"><input type="checkbox" class="todas"> Marcar todas</label>${ntes.map(n => `<label><input type="checkbox" value="${n.id}"> ${esc(regiao(n.nome))}</label>`).join("")}<span class="quebra"></span><a class="ver-mapa" href="mapa.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>Ver o mapa das regiões <span aria-hidden="true">↗</span></a></div>` : ""}
     </div>`).join("") : `<p class="sub">Você já se candidatou a todas as vagas disponíveis.</p>`;
   const atualizar = () => {
     let algumaNte = false;
